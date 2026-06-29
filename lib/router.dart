@@ -2,6 +2,7 @@ import 'package:go_router/go_router.dart';
 
 import 'package:aad/screens/home/home_screen.dart';
 import 'package:aad/screens/categories/categories_screen.dart';
+import 'package:aad/screens/categories/edit_categories_screen.dart';
 import 'package:aad/screens/stats/stats_screen.dart';
 import 'package:aad/screens/transactions/transactions_screen.dart';
 import 'package:aad/widgets/app_shell.dart';
@@ -27,6 +28,12 @@ final router = GoRouter(
             GoRoute(
               path: '/categories',
               builder: (context, state) => const CategoriesScreen(),
+              routes: [
+                GoRoute(
+                  path: 'edit',
+                  builder: (context, state) => const EditCategoriesScreen(),
+                ),
+              ],
             ),
           ],
         ),

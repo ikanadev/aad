@@ -1,3 +1,4 @@
+import 'package:aad/widgets/app_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -64,6 +65,8 @@ class HomeScreen extends ConsumerWidget {
               ),
               loading: () => const Center(child: CircularProgressIndicator()),
             ),
+            const SizedBox(height: 12),
+            const Center(child: AppIcon(icon: AppIcons.taxi)),
           ],
         ),
       ),
@@ -132,8 +135,6 @@ class HomeScreen extends ConsumerWidget {
 
     if (confirmed != true) return;
 
-    await ref
-        .read(accountsProvider.notifier)
-        .deleteAccount(id: account.id);
+    await ref.read(accountsProvider.notifier).deleteAccount(id: account.id);
   }
 }

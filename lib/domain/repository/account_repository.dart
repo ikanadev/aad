@@ -14,15 +14,15 @@ class AccountRepository {
     required String name,
     required String currencyCode,
   }) async {
-    final normalizedName = _normalizeName(name);
-    final normalizedCurrencyCode = _normalizeCurrencyCode(currencyCode);
     final id = _uuid.v4();
 
-    await _database.into(_database.dbAccounts).insert(
+    await _database
+        .into(_database.dbAccounts)
+        .insert(
           DbAccountsCompanion.insert(
             id: id,
-            name: normalizedName,
-            currencyCode: normalizedCurrencyCode,
+            name: name.trim(),
+            currencyCode: currencyCode.trim().toUpperCase(),
             serverVersion: const Value(0),
             isDirty: const Value(true),
             isDeleted: const Value(false),
@@ -33,12 +33,11 @@ class AccountRepository {
   }
 
   Future<List<Account>> listAccounts() async {
-    final rows = await (_database.select(_database.dbAccounts)
-          ..where((account) => account.isDeleted.equals(false))
-          ..orderBy([
-            (account) => OrderingTerm.asc(account.name),
-          ]))
-        .get();
+    final rows =
+        await (_database.select(_database.dbAccounts)
+              ..where((account) => account.isDeleted.equals(false))
+              ..orderBy([(account) => OrderingTerm.asc(account.name)]))
+            .get();
 
     return rows.map(Account.fromDB).toList();
   }
@@ -47,42 +46,21 @@ class AccountRepository {
     required String id,
     required String name,
   }) async {
-    final normalizedName = _normalizeName(name);
-
-    await (_database.update(_database.dbAccounts)
-          ..where((account) => account.id.equals(id)))
-        .write(
+    await (_database.update(
+      _database.dbAccounts,
+    )..where((account) => account.id.equals(id))).write(
       DbAccountsCompanion(
-        name: Value(normalizedName),
+        name: Value(name.trim()),
         isDirty: const Value(true),
       ),
     );
   }
 
   Future<void> deleteAccount({required String id}) async {
-    await (_database.update(_database.dbAccounts)
-          ..where((account) => account.id.equals(id)))
-        .write(
-      const DbAccountsCompanion(
-        isDeleted: Value(true),
-        isDirty: Value(true),
-      ),
+    await (_database.update(
+      _database.dbAccounts,
+    )..where((account) => account.id.equals(id))).write(
+      const DbAccountsCompanion(isDeleted: Value(true), isDirty: Value(true)),
     );
-  }
-
-  String _normalizeName(String name) {
-    final normalizedName = name.trim();
-    if (normalizedName.isEmpty) {
-      throw ArgumentError('Account name cannot be empty');
-    }
-    return normalizedName;
-  }
-
-  String _normalizeCurrencyCode(String currencyCode) {
-    final normalizedCurrencyCode = currencyCode.trim().toUpperCase();
-    if (normalizedCurrencyCode.isEmpty) {
-      throw ArgumentError('Currency code cannot be empty');
-    }
-    return normalizedCurrencyCode;
   }
 }

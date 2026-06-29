@@ -1,11 +1,19 @@
 import 'package:drift/drift.dart';
 
-class DbAccounts extends Table {
+class DbCategories extends Table {
   late final id = text()();
 
   late final name = text()();
 
-  late final currencyCode = text()();
+  late final iconName = text()();
+
+  late final type = text()();
+
+  late final color = text()();
+
+  late final sortOrder = integer().withDefault(const Constant(0))();
+
+  late final isSystem = boolean().withDefault(const Constant(false))();
 
   late final serverVersion = real().withDefault(const Constant(0))();
 

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:aad/domain/models/category.dart';
 import 'package:aad/domain/providers/categories/categories_provider.dart';
+import 'package:aad/domain/providers/categories/category_actions_provider.dart';
 import 'package:aad/screens/categories/widgets/category_bottom_sheet.dart';
 import 'package:aad/screens/categories/widgets/category_section_title.dart';
 import 'package:aad/screens/categories/widgets/editable_category_tile.dart';
@@ -91,7 +92,7 @@ class EditCategoriesScreen extends ConsumerWidget {
 
     if (category == null) {
       await ref
-          .read(categoriesProvider.notifier)
+          .read(categoryActionsProvider.notifier)
           .createCategory(
             name: result.name,
             iconName: result.iconName,
@@ -102,7 +103,7 @@ class EditCategoriesScreen extends ConsumerWidget {
     }
 
     await ref
-        .read(categoriesProvider.notifier)
+        .read(categoryActionsProvider.notifier)
         .updateCategory(
           id: category.id,
           name: result.name,
@@ -138,6 +139,6 @@ class EditCategoriesScreen extends ConsumerWidget {
     );
 
     if (confirmed != true) return;
-    await ref.read(categoriesProvider.notifier).deleteCategory(id: category.id);
+    await ref.read(categoryActionsProvider.notifier).deleteCategory(id: category.id);
   }
 }

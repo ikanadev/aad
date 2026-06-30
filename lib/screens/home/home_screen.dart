@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:aad/domain/models/account.dart';
+import 'package:aad/domain/providers/accounts/account_actions_provider.dart';
 import 'package:aad/domain/providers/accounts/accounts_provider.dart';
 import 'package:aad/screens/home/widgets/account_bottom_sheet.dart';
 import 'package:aad/screens/home/widgets/account_item.dart';
@@ -86,7 +87,7 @@ class HomeScreen extends ConsumerWidget {
     if (result == null) return;
 
     await ref
-        .read(accountsProvider.notifier)
+        .read(accountActionsProvider.notifier)
         .createAccount(name: result.name, currencyCode: result.currencyCode);
   }
 
@@ -104,7 +105,7 @@ class HomeScreen extends ConsumerWidget {
     if (result == null) return;
 
     await ref
-        .read(accountsProvider.notifier)
+        .read(accountActionsProvider.notifier)
         .editAccount(id: account.id, name: result.name);
   }
 
@@ -135,6 +136,6 @@ class HomeScreen extends ConsumerWidget {
 
     if (confirmed != true) return;
 
-    await ref.read(accountsProvider.notifier).deleteAccount(id: account.id);
+    await ref.read(accountActionsProvider.notifier).deleteAccount(id: account.id);
   }
 }

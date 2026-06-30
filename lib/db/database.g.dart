@@ -1027,11 +1027,539 @@ class DbCategoriesCompanion extends UpdateCompanion<DbCategory> {
   }
 }
 
+class $DbTransactionsTable extends DbTransactions
+    with TableInfo<$DbTransactionsTable, DbTransaction> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $DbTransactionsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _accountIdMeta = const VerificationMeta(
+    'accountId',
+  );
+  @override
+  late final GeneratedColumn<String> accountId = GeneratedColumn<String>(
+    'account_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _categoryIdMeta = const VerificationMeta(
+    'categoryId',
+  );
+  @override
+  late final GeneratedColumn<String> categoryId = GeneratedColumn<String>(
+    'category_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _amountMeta = const VerificationMeta('amount');
+  @override
+  late final GeneratedColumn<int> amount = GeneratedColumn<int>(
+    'amount',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _dateMeta = const VerificationMeta('date');
+  @override
+  late final GeneratedColumn<DateTime> date = GeneratedColumn<DateTime>(
+    'date',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _serverVersionMeta = const VerificationMeta(
+    'serverVersion',
+  );
+  @override
+  late final GeneratedColumn<double> serverVersion = GeneratedColumn<double>(
+    'server_version',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _isDirtyMeta = const VerificationMeta(
+    'isDirty',
+  );
+  @override
+  late final GeneratedColumn<bool> isDirty = GeneratedColumn<bool>(
+    'is_dirty',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_dirty" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _isDeletedMeta = const VerificationMeta(
+    'isDeleted',
+  );
+  @override
+  late final GeneratedColumn<bool> isDeleted = GeneratedColumn<bool>(
+    'is_deleted',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_deleted" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    accountId,
+    categoryId,
+    amount,
+    date,
+    serverVersion,
+    isDirty,
+    isDeleted,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'db_transactions';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<DbTransaction> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('account_id')) {
+      context.handle(
+        _accountIdMeta,
+        accountId.isAcceptableOrUnknown(data['account_id']!, _accountIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_accountIdMeta);
+    }
+    if (data.containsKey('category_id')) {
+      context.handle(
+        _categoryIdMeta,
+        categoryId.isAcceptableOrUnknown(data['category_id']!, _categoryIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_categoryIdMeta);
+    }
+    if (data.containsKey('amount')) {
+      context.handle(
+        _amountMeta,
+        amount.isAcceptableOrUnknown(data['amount']!, _amountMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_amountMeta);
+    }
+    if (data.containsKey('date')) {
+      context.handle(
+        _dateMeta,
+        date.isAcceptableOrUnknown(data['date']!, _dateMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_dateMeta);
+    }
+    if (data.containsKey('server_version')) {
+      context.handle(
+        _serverVersionMeta,
+        serverVersion.isAcceptableOrUnknown(
+          data['server_version']!,
+          _serverVersionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('is_dirty')) {
+      context.handle(
+        _isDirtyMeta,
+        isDirty.isAcceptableOrUnknown(data['is_dirty']!, _isDirtyMeta),
+      );
+    }
+    if (data.containsKey('is_deleted')) {
+      context.handle(
+        _isDeletedMeta,
+        isDeleted.isAcceptableOrUnknown(data['is_deleted']!, _isDeletedMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  DbTransaction map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return DbTransaction(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      accountId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}account_id'],
+      )!,
+      categoryId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}category_id'],
+      )!,
+      amount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}amount'],
+      )!,
+      date: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}date'],
+      )!,
+      serverVersion: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}server_version'],
+      )!,
+      isDirty: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_dirty'],
+      )!,
+      isDeleted: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_deleted'],
+      )!,
+    );
+  }
+
+  @override
+  $DbTransactionsTable createAlias(String alias) {
+    return $DbTransactionsTable(attachedDatabase, alias);
+  }
+}
+
+class DbTransaction extends DataClass implements Insertable<DbTransaction> {
+  final String id;
+  final String accountId;
+  final String categoryId;
+  final int amount;
+  final DateTime date;
+  final double serverVersion;
+  final bool isDirty;
+  final bool isDeleted;
+  const DbTransaction({
+    required this.id,
+    required this.accountId,
+    required this.categoryId,
+    required this.amount,
+    required this.date,
+    required this.serverVersion,
+    required this.isDirty,
+    required this.isDeleted,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['account_id'] = Variable<String>(accountId);
+    map['category_id'] = Variable<String>(categoryId);
+    map['amount'] = Variable<int>(amount);
+    map['date'] = Variable<DateTime>(date);
+    map['server_version'] = Variable<double>(serverVersion);
+    map['is_dirty'] = Variable<bool>(isDirty);
+    map['is_deleted'] = Variable<bool>(isDeleted);
+    return map;
+  }
+
+  DbTransactionsCompanion toCompanion(bool nullToAbsent) {
+    return DbTransactionsCompanion(
+      id: Value(id),
+      accountId: Value(accountId),
+      categoryId: Value(categoryId),
+      amount: Value(amount),
+      date: Value(date),
+      serverVersion: Value(serverVersion),
+      isDirty: Value(isDirty),
+      isDeleted: Value(isDeleted),
+    );
+  }
+
+  factory DbTransaction.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return DbTransaction(
+      id: serializer.fromJson<String>(json['id']),
+      accountId: serializer.fromJson<String>(json['accountId']),
+      categoryId: serializer.fromJson<String>(json['categoryId']),
+      amount: serializer.fromJson<int>(json['amount']),
+      date: serializer.fromJson<DateTime>(json['date']),
+      serverVersion: serializer.fromJson<double>(json['serverVersion']),
+      isDirty: serializer.fromJson<bool>(json['isDirty']),
+      isDeleted: serializer.fromJson<bool>(json['isDeleted']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'accountId': serializer.toJson<String>(accountId),
+      'categoryId': serializer.toJson<String>(categoryId),
+      'amount': serializer.toJson<int>(amount),
+      'date': serializer.toJson<DateTime>(date),
+      'serverVersion': serializer.toJson<double>(serverVersion),
+      'isDirty': serializer.toJson<bool>(isDirty),
+      'isDeleted': serializer.toJson<bool>(isDeleted),
+    };
+  }
+
+  DbTransaction copyWith({
+    String? id,
+    String? accountId,
+    String? categoryId,
+    int? amount,
+    DateTime? date,
+    double? serverVersion,
+    bool? isDirty,
+    bool? isDeleted,
+  }) => DbTransaction(
+    id: id ?? this.id,
+    accountId: accountId ?? this.accountId,
+    categoryId: categoryId ?? this.categoryId,
+    amount: amount ?? this.amount,
+    date: date ?? this.date,
+    serverVersion: serverVersion ?? this.serverVersion,
+    isDirty: isDirty ?? this.isDirty,
+    isDeleted: isDeleted ?? this.isDeleted,
+  );
+  DbTransaction copyWithCompanion(DbTransactionsCompanion data) {
+    return DbTransaction(
+      id: data.id.present ? data.id.value : this.id,
+      accountId: data.accountId.present ? data.accountId.value : this.accountId,
+      categoryId: data.categoryId.present
+          ? data.categoryId.value
+          : this.categoryId,
+      amount: data.amount.present ? data.amount.value : this.amount,
+      date: data.date.present ? data.date.value : this.date,
+      serverVersion: data.serverVersion.present
+          ? data.serverVersion.value
+          : this.serverVersion,
+      isDirty: data.isDirty.present ? data.isDirty.value : this.isDirty,
+      isDeleted: data.isDeleted.present ? data.isDeleted.value : this.isDeleted,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DbTransaction(')
+          ..write('id: $id, ')
+          ..write('accountId: $accountId, ')
+          ..write('categoryId: $categoryId, ')
+          ..write('amount: $amount, ')
+          ..write('date: $date, ')
+          ..write('serverVersion: $serverVersion, ')
+          ..write('isDirty: $isDirty, ')
+          ..write('isDeleted: $isDeleted')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    accountId,
+    categoryId,
+    amount,
+    date,
+    serverVersion,
+    isDirty,
+    isDeleted,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is DbTransaction &&
+          other.id == this.id &&
+          other.accountId == this.accountId &&
+          other.categoryId == this.categoryId &&
+          other.amount == this.amount &&
+          other.date == this.date &&
+          other.serverVersion == this.serverVersion &&
+          other.isDirty == this.isDirty &&
+          other.isDeleted == this.isDeleted);
+}
+
+class DbTransactionsCompanion extends UpdateCompanion<DbTransaction> {
+  final Value<String> id;
+  final Value<String> accountId;
+  final Value<String> categoryId;
+  final Value<int> amount;
+  final Value<DateTime> date;
+  final Value<double> serverVersion;
+  final Value<bool> isDirty;
+  final Value<bool> isDeleted;
+  final Value<int> rowid;
+  const DbTransactionsCompanion({
+    this.id = const Value.absent(),
+    this.accountId = const Value.absent(),
+    this.categoryId = const Value.absent(),
+    this.amount = const Value.absent(),
+    this.date = const Value.absent(),
+    this.serverVersion = const Value.absent(),
+    this.isDirty = const Value.absent(),
+    this.isDeleted = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  DbTransactionsCompanion.insert({
+    required String id,
+    required String accountId,
+    required String categoryId,
+    required int amount,
+    required DateTime date,
+    this.serverVersion = const Value.absent(),
+    this.isDirty = const Value.absent(),
+    this.isDeleted = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       accountId = Value(accountId),
+       categoryId = Value(categoryId),
+       amount = Value(amount),
+       date = Value(date);
+  static Insertable<DbTransaction> custom({
+    Expression<String>? id,
+    Expression<String>? accountId,
+    Expression<String>? categoryId,
+    Expression<int>? amount,
+    Expression<DateTime>? date,
+    Expression<double>? serverVersion,
+    Expression<bool>? isDirty,
+    Expression<bool>? isDeleted,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (accountId != null) 'account_id': accountId,
+      if (categoryId != null) 'category_id': categoryId,
+      if (amount != null) 'amount': amount,
+      if (date != null) 'date': date,
+      if (serverVersion != null) 'server_version': serverVersion,
+      if (isDirty != null) 'is_dirty': isDirty,
+      if (isDeleted != null) 'is_deleted': isDeleted,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  DbTransactionsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? accountId,
+    Value<String>? categoryId,
+    Value<int>? amount,
+    Value<DateTime>? date,
+    Value<double>? serverVersion,
+    Value<bool>? isDirty,
+    Value<bool>? isDeleted,
+    Value<int>? rowid,
+  }) {
+    return DbTransactionsCompanion(
+      id: id ?? this.id,
+      accountId: accountId ?? this.accountId,
+      categoryId: categoryId ?? this.categoryId,
+      amount: amount ?? this.amount,
+      date: date ?? this.date,
+      serverVersion: serverVersion ?? this.serverVersion,
+      isDirty: isDirty ?? this.isDirty,
+      isDeleted: isDeleted ?? this.isDeleted,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (accountId.present) {
+      map['account_id'] = Variable<String>(accountId.value);
+    }
+    if (categoryId.present) {
+      map['category_id'] = Variable<String>(categoryId.value);
+    }
+    if (amount.present) {
+      map['amount'] = Variable<int>(amount.value);
+    }
+    if (date.present) {
+      map['date'] = Variable<DateTime>(date.value);
+    }
+    if (serverVersion.present) {
+      map['server_version'] = Variable<double>(serverVersion.value);
+    }
+    if (isDirty.present) {
+      map['is_dirty'] = Variable<bool>(isDirty.value);
+    }
+    if (isDeleted.present) {
+      map['is_deleted'] = Variable<bool>(isDeleted.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DbTransactionsCompanion(')
+          ..write('id: $id, ')
+          ..write('accountId: $accountId, ')
+          ..write('categoryId: $categoryId, ')
+          ..write('amount: $amount, ')
+          ..write('date: $date, ')
+          ..write('serverVersion: $serverVersion, ')
+          ..write('isDirty: $isDirty, ')
+          ..write('isDeleted: $isDeleted, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
   late final $DbAccountsTable dbAccounts = $DbAccountsTable(this);
   late final $DbCategoriesTable dbCategories = $DbCategoriesTable(this);
+  late final $DbTransactionsTable dbTransactions = $DbTransactionsTable(this);
+  late final Index idxTransactionsAccountDeletedDate = Index(
+    'idx_transactions_account_deleted_date',
+    'CREATE INDEX idx_transactions_account_deleted_date ON db_transactions (account_id, is_deleted, date)',
+  );
+  late final Index idxTransactionsDeletedDate = Index(
+    'idx_transactions_deleted_date',
+    'CREATE INDEX idx_transactions_deleted_date ON db_transactions (is_deleted, date)',
+  );
+  late final Index idxTransactionsCategory = Index(
+    'idx_transactions_category',
+    'CREATE INDEX idx_transactions_category ON db_transactions (category_id)',
+  );
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -1039,6 +1567,10 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   List<DatabaseSchemaEntity> get allSchemaEntities => [
     dbAccounts,
     dbCategories,
+    dbTransactions,
+    idxTransactionsAccountDeletedDate,
+    idxTransactionsDeletedDate,
+    idxTransactionsCategory,
   ];
 }
 
@@ -1559,6 +2091,269 @@ typedef $$DbCategoriesTableProcessedTableManager =
       DbCategory,
       PrefetchHooks Function()
     >;
+typedef $$DbTransactionsTableCreateCompanionBuilder =
+    DbTransactionsCompanion Function({
+      required String id,
+      required String accountId,
+      required String categoryId,
+      required int amount,
+      required DateTime date,
+      Value<double> serverVersion,
+      Value<bool> isDirty,
+      Value<bool> isDeleted,
+      Value<int> rowid,
+    });
+typedef $$DbTransactionsTableUpdateCompanionBuilder =
+    DbTransactionsCompanion Function({
+      Value<String> id,
+      Value<String> accountId,
+      Value<String> categoryId,
+      Value<int> amount,
+      Value<DateTime> date,
+      Value<double> serverVersion,
+      Value<bool> isDirty,
+      Value<bool> isDeleted,
+      Value<int> rowid,
+    });
+
+class $$DbTransactionsTableFilterComposer
+    extends Composer<_$AppDatabase, $DbTransactionsTable> {
+  $$DbTransactionsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get accountId => $composableBuilder(
+    column: $table.accountId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get categoryId => $composableBuilder(
+    column: $table.categoryId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get amount => $composableBuilder(
+    column: $table.amount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get date => $composableBuilder(
+    column: $table.date,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get serverVersion => $composableBuilder(
+    column: $table.serverVersion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isDirty => $composableBuilder(
+    column: $table.isDirty,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isDeleted => $composableBuilder(
+    column: $table.isDeleted,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$DbTransactionsTableOrderingComposer
+    extends Composer<_$AppDatabase, $DbTransactionsTable> {
+  $$DbTransactionsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get accountId => $composableBuilder(
+    column: $table.accountId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get categoryId => $composableBuilder(
+    column: $table.categoryId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get amount => $composableBuilder(
+    column: $table.amount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get date => $composableBuilder(
+    column: $table.date,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get serverVersion => $composableBuilder(
+    column: $table.serverVersion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isDirty => $composableBuilder(
+    column: $table.isDirty,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isDeleted => $composableBuilder(
+    column: $table.isDeleted,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$DbTransactionsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $DbTransactionsTable> {
+  $$DbTransactionsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get accountId =>
+      $composableBuilder(column: $table.accountId, builder: (column) => column);
+
+  GeneratedColumn<String> get categoryId => $composableBuilder(
+    column: $table.categoryId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get amount =>
+      $composableBuilder(column: $table.amount, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get date =>
+      $composableBuilder(column: $table.date, builder: (column) => column);
+
+  GeneratedColumn<double> get serverVersion => $composableBuilder(
+    column: $table.serverVersion,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get isDirty =>
+      $composableBuilder(column: $table.isDirty, builder: (column) => column);
+
+  GeneratedColumn<bool> get isDeleted =>
+      $composableBuilder(column: $table.isDeleted, builder: (column) => column);
+}
+
+class $$DbTransactionsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $DbTransactionsTable,
+          DbTransaction,
+          $$DbTransactionsTableFilterComposer,
+          $$DbTransactionsTableOrderingComposer,
+          $$DbTransactionsTableAnnotationComposer,
+          $$DbTransactionsTableCreateCompanionBuilder,
+          $$DbTransactionsTableUpdateCompanionBuilder,
+          (
+            DbTransaction,
+            BaseReferences<_$AppDatabase, $DbTransactionsTable, DbTransaction>,
+          ),
+          DbTransaction,
+          PrefetchHooks Function()
+        > {
+  $$DbTransactionsTableTableManager(
+    _$AppDatabase db,
+    $DbTransactionsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$DbTransactionsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$DbTransactionsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$DbTransactionsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> accountId = const Value.absent(),
+                Value<String> categoryId = const Value.absent(),
+                Value<int> amount = const Value.absent(),
+                Value<DateTime> date = const Value.absent(),
+                Value<double> serverVersion = const Value.absent(),
+                Value<bool> isDirty = const Value.absent(),
+                Value<bool> isDeleted = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => DbTransactionsCompanion(
+                id: id,
+                accountId: accountId,
+                categoryId: categoryId,
+                amount: amount,
+                date: date,
+                serverVersion: serverVersion,
+                isDirty: isDirty,
+                isDeleted: isDeleted,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String accountId,
+                required String categoryId,
+                required int amount,
+                required DateTime date,
+                Value<double> serverVersion = const Value.absent(),
+                Value<bool> isDirty = const Value.absent(),
+                Value<bool> isDeleted = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => DbTransactionsCompanion.insert(
+                id: id,
+                accountId: accountId,
+                categoryId: categoryId,
+                amount: amount,
+                date: date,
+                serverVersion: serverVersion,
+                isDirty: isDirty,
+                isDeleted: isDeleted,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$DbTransactionsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $DbTransactionsTable,
+      DbTransaction,
+      $$DbTransactionsTableFilterComposer,
+      $$DbTransactionsTableOrderingComposer,
+      $$DbTransactionsTableAnnotationComposer,
+      $$DbTransactionsTableCreateCompanionBuilder,
+      $$DbTransactionsTableUpdateCompanionBuilder,
+      (
+        DbTransaction,
+        BaseReferences<_$AppDatabase, $DbTransactionsTable, DbTransaction>,
+      ),
+      DbTransaction,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -1567,4 +2362,6 @@ class $AppDatabaseManager {
       $$DbAccountsTableTableManager(_db, _db.dbAccounts);
   $$DbCategoriesTableTableManager get dbCategories =>
       $$DbCategoriesTableTableManager(_db, _db.dbCategories);
+  $$DbTransactionsTableTableManager get dbTransactions =>
+      $$DbTransactionsTableTableManager(_db, _db.dbTransactions);
 }

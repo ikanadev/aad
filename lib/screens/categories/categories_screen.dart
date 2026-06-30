@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import 'package:aad/domain/models/category.dart';
 import 'package:aad/domain/providers/categories/categories_provider.dart';
+import 'package:aad/domain/providers/categories/category_actions_provider.dart';
 import 'package:aad/screens/categories/widgets/category_grid.dart';
 
 class CategoriesScreen extends ConsumerStatefulWidget {
@@ -64,7 +65,7 @@ class _CategoriesScreenState extends ConsumerState<CategoriesScreen>
                   .where((category) => category.type == CategoryType.expense)
                   .toList(),
               onReorder: (reordered) => ref
-                  .read(categoriesProvider.notifier)
+                  .read(categoryActionsProvider.notifier)
                   .reorderCategories(
                     type: CategoryType.expense,
                     categories: reordered,
@@ -77,7 +78,7 @@ class _CategoriesScreenState extends ConsumerState<CategoriesScreen>
                   .where((category) => category.type == CategoryType.income)
                   .toList(),
               onReorder: (reordered) => ref
-                  .read(categoriesProvider.notifier)
+                  .read(categoryActionsProvider.notifier)
                   .reorderCategories(
                     type: CategoryType.income,
                     categories: reordered,

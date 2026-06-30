@@ -5,10 +5,11 @@ import 'package:uuid/uuid.dart';
 
 import 'models/accounts.dart';
 import 'models/categories.dart';
+import 'models/transactions.dart';
 
 part 'database.g.dart';
 
-@DriftDatabase(tables: [DbAccounts, DbCategories])
+@DriftDatabase(tables: [DbAccounts, DbCategories, DbTransactions])
 class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
 

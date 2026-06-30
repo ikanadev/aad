@@ -9,11 +9,17 @@ part of 'accounts_provider.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(Accounts)
+@ProviderFor(accounts)
 final accountsProvider = AccountsProvider._();
 
 final class AccountsProvider
-    extends $AsyncNotifierProvider<Accounts, List<Account>> {
+    extends
+        $FunctionalProvider<
+          AsyncValue<List<Account>>,
+          List<Account>,
+          FutureOr<List<Account>>
+        >
+    with $FutureModifier<List<Account>>, $FutureProvider<List<Account>> {
   AccountsProvider._()
     : super(
         from: null,
@@ -30,25 +36,14 @@ final class AccountsProvider
 
   @$internal
   @override
-  Accounts create() => Accounts();
-}
+  $FutureProviderElement<List<Account>> $createElement(
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
 
-String _$accountsHash() => r'60eba961d95a92418bcce65021d09a6d462a91bc';
-
-abstract class _$Accounts extends $AsyncNotifier<List<Account>> {
-  FutureOr<List<Account>> build();
-  @$mustCallSuper
   @override
-  WhenComplete runBuild() {
-    final ref = this.ref as $Ref<AsyncValue<List<Account>>, List<Account>>;
-    final element =
-        ref.element
-            as $ClassProviderElement<
-              AnyNotifier<AsyncValue<List<Account>>, List<Account>>,
-              AsyncValue<List<Account>>,
-              Object?,
-              Object?
-            >;
-    return element.handleCreate(ref, build);
+  FutureOr<List<Account>> create(Ref ref) {
+    return accounts(ref);
   }
 }
+
+String _$accountsHash() => r'410db82e5ae9798b714fe9a5f4a0b77ebdf23876';

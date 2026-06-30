@@ -10,16 +10,10 @@ class CategoryRepository {
   final AppDatabase _database;
   final Uuid _uuid = const Uuid();
 
-  Future<void> ensureDefaultCategories() async {
-    await _ensureSystemCategory(type: CategoryType.income, color: '#16A34A');
-    await _ensureSystemCategory(type: CategoryType.expense, color: '#DC2626');
-  }
-
   Future<List<Category>> listCategories({
     CategoryType? type,
     bool includeSystem = false,
   }) async {
-    await ensureDefaultCategories();
     final query = _database.select(_database.dbCategories)
       ..where((category) => category.isDeleted.equals(false));
 
@@ -54,7 +48,7 @@ class CategoryRepository {
           DbCategoriesCompanion.insert(
             id: id,
             name: name.trim(),
-            iconName: _normalizeIconName(iconName),
+            iconName: iconName,
             type: type.dbValue,
             color: color,
             sortOrder: Value(sortOrder),
@@ -85,7 +79,7 @@ class CategoryRepository {
     )..where((category) => category.id.equals(id))).write(
       DbCategoriesCompanion(
         name: Value(name.trim()),
-        iconName: Value(_normalizeIconName(iconName)),
+        iconName: Value(iconName),
         type: Value(type.dbValue),
         color: Value(color),
         sortOrder: movedType
@@ -122,35 +116,6 @@ class CategoryRepository {
     });
   }
 
-  Future<void> _ensureSystemCategory({
-    required CategoryType type,
-    required String color,
-  }) async {
-    final id = 'system-account-balance-${type.dbValue}';
-    final existing = await (_database.select(
-      _database.dbCategories,
-    )..where((category) => category.id.equals(id))).getSingleOrNull();
-
-    if (existing != null) return;
-
-    await _database
-        .into(_database.dbCategories)
-        .insert(
-          DbCategoriesCompanion.insert(
-            id: id,
-            name: 'Account balance',
-            iconName: 'account_balance_wallet',
-            type: type.dbValue,
-            color: color,
-            sortOrder: const Value(-1),
-            isSystem: const Value(true),
-            serverVersion: const Value(0),
-            isDirty: const Value(true),
-            isDeleted: const Value(false),
-          ),
-        );
-  }
-
   Future<int> _nextSortOrder(CategoryType type) async {
     final categories = await listCategories(type: type);
     if (categories.isEmpty) return 0;
@@ -158,10 +123,5 @@ class CategoryRepository {
             .map((category) => category.sortOrder)
             .reduce((a, b) => a > b ? a : b) +
         1;
-  }
-
-  String _normalizeIconName(String iconName) {
-    final normalizedIconName = iconName.trim();
-    return normalizedIconName.isEmpty ? 'category' : normalizedIconName;
   }
 }

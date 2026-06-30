@@ -1,5 +1,7 @@
+import 'package:aad/domain/models/category.dart';
 import 'package:drift/drift.dart';
 import 'package:drift_flutter/drift_flutter.dart';
+import 'package:uuid/uuid.dart';
 
 import 'models/accounts.dart';
 import 'models/categories.dart';
@@ -12,6 +14,44 @@ class AppDatabase extends _$AppDatabase {
 
   @override
   int get schemaVersion => 1;
+
+  @override
+  MigrationStrategy get migration {
+    return MigrationStrategy(
+      onCreate: (m) async {
+        await m.createAll();
+        const id = Uuid();
+        final name = 'Account balance';
+        for (final category in [
+          (type: CategoryType.income, color: '#16A34A', iconName: ''),
+          (type: CategoryType.expense, color: '#DC2626', iconName: ''),
+        ]) {
+          final existing =
+              await (select(dbCategories)..where(
+                    (c) =>
+                        c.type.equals(category.type.dbValue) &
+                        c.name.equals(name),
+                  ))
+                  .getSingleOrNull();
+          if (existing != null) continue;
+          await into(dbCategories).insert(
+            DbCategory(
+              id: id.v4(),
+              name: name,
+              iconName: category.iconName,
+              type: category.type.dbValue,
+              color: category.color,
+              sortOrder: -1,
+              isSystem: true,
+              serverVersion: 0,
+              isDirty: true,
+              isDeleted: false,
+            ),
+          );
+        }
+      },
+    );
+  }
 
   static QueryExecutor _openConnection() {
     return driftDatabase(name: 'aad_database');

@@ -11,7 +11,7 @@ class AppIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return VectorGraphic(
-      loader: AssetBytesLoader(icon.path),
+      loader: AssetBytesLoader(icon.assetPath),
       width: size,
       height: size,
       colorFilter: color == null
@@ -22,9 +22,33 @@ class AppIcon extends StatelessWidget {
 }
 
 enum AppIcons {
-  taxi('assets/icons/vec/taxi.vec');
+  bills,
+  clothes,
+  crypto,
+  dance,
+  dates,
+  dinner,
+  donations,
+  drinks,
+  entretainment,
+  expensive,
+  family,
+  food,
+  friends,
+  gifts,
+  groceries,
+  grow,
+  internet,
+  job,
+  junkFood,
+  landRent,
+  medical,
+  negativeAdjustment,
+  positiveAdjustment,
+  rent,
+  selfCare,
+  taxi,
+  travel;
 
-  const AppIcons(this.path);
-
-  final String path;
+  String get assetPath => 'assets/icons/vec/$name.vec';
 }

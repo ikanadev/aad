@@ -8,23 +8,16 @@ part 'transactions_provider.g.dart';
 class TransactionListState {
   final List<TransactionDetails> items;
   final bool hasMore;
-  final TransactionFilters filters;
 
-  const TransactionListState({
-    required this.items,
-    required this.hasMore,
-    required this.filters,
-  });
+  const TransactionListState({required this.items, required this.hasMore});
 
   TransactionListState copyWith({
     List<TransactionDetails>? items,
     bool? hasMore,
-    TransactionFilters? filters,
   }) {
     return TransactionListState(
       items: items ?? this.items,
       hasMore: hasMore ?? this.hasMore,
-      filters: filters ?? this.filters,
     );
   }
 }
@@ -34,15 +27,13 @@ class TransactionsList extends _$TransactionsList {
   static const _pageSize = 20;
 
   @override
-  Future<TransactionListState> build() async {
-    const filters = TransactionFilters();
+  Future<TransactionListState> build(TransactionFilters filters) async {
     final items = await ref
         .read(transactionRepositoryProvider)
         .listTransactions(filters: filters, page: 0, pageSize: _pageSize);
     return TransactionListState(
       items: items,
       hasMore: items.length == _pageSize,
-      filters: filters,
     );
   }
 
@@ -54,7 +45,7 @@ class TransactionsList extends _$TransactionsList {
     final newItems = await ref
         .read(transactionRepositoryProvider)
         .listTransactions(
-          filters: current.filters,
+          filters: filters,
           page: nextPage,
           pageSize: _pageSize,
         );
@@ -63,22 +54,6 @@ class TransactionsList extends _$TransactionsList {
       current.copyWith(
         items: [...current.items, ...newItems],
         hasMore: newItems.length == _pageSize,
-      ),
-    );
-  }
-
-  Future<void> applyFilters(TransactionFilters filters) async {
-    state = const AsyncLoading();
-    final result = await AsyncValue.guard(
-      () => ref
-          .read(transactionRepositoryProvider)
-          .listTransactions(filters: filters, page: 0, pageSize: _pageSize),
-    );
-    state = result.whenData(
-      (items) => TransactionListState(
-        items: items,
-        hasMore: items.length == _pageSize,
-        filters: filters,
       ),
     );
   }

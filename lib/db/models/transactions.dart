@@ -20,6 +20,8 @@ class DbTransactions extends Table {
 
   late final date = dateTime()();
 
+  late final comment = text().nullable()();
+
   late final serverVersion = real().withDefault(const Constant(0))();
 
   late final isDirty = boolean().withDefault(const Constant(false))();

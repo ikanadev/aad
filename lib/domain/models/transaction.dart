@@ -8,6 +8,7 @@ class Transaction {
   final String categoryId;
   final int amount; // cents, always positive
   final DateTime date;
+  final String? comment;
 
   const Transaction({
     required this.id,
@@ -15,6 +16,7 @@ class Transaction {
     required this.categoryId,
     required this.amount,
     required this.date,
+    this.comment,
   });
 
   factory Transaction.fromDB(DbTransaction row) {
@@ -24,6 +26,7 @@ class Transaction {
       categoryId: row.categoryId,
       amount: row.amount,
       date: row.date,
+      comment: row.comment,
     );
   }
 
@@ -34,6 +37,7 @@ class Transaction {
       categoryId: Value(categoryId),
       amount: Value(amount),
       date: Value(date),
+      comment: Value(comment),
       isDirty: Value(isDirty),
     );
   }

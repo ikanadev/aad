@@ -38,6 +38,7 @@ class TransactionRepository {
     required String categoryId,
     required int amount,
     required DateTime date,
+    String? comment,
   }) async {
     final id = _uuid.v4();
 
@@ -50,6 +51,7 @@ class TransactionRepository {
             categoryId: categoryId,
             amount: amount,
             date: date,
+            comment: Value(comment),
             serverVersion: const Value(0),
             isDirty: const Value(true),
             isDeleted: const Value(false),
@@ -64,6 +66,7 @@ class TransactionRepository {
     required String categoryId,
     required int amount,
     required DateTime date,
+    String? comment,
   }) async {
     await (_database.update(
       _database.dbTransactions,
@@ -72,6 +75,7 @@ class TransactionRepository {
         categoryId: Value(categoryId),
         amount: Value(amount),
         date: Value(date),
+        comment: Value(comment),
         isDirty: const Value(true),
       ),
     );
@@ -110,28 +114,28 @@ class TransactionRepository {
     int? page,
     int pageSize = 20,
   }) async {
-    final t = _database.dbTransactions;
-    final a = _database.dbAccounts;
-    final c = _database.dbCategories;
+    final txs = _database.dbTransactions;
+    final accs = _database.dbAccounts;
+    final cats = _database.dbCategories;
 
-    final query = _database.select(t).join([
-      innerJoin(a, a.id.equalsExp(t.accountId)),
-      innerJoin(c, c.id.equalsExp(t.categoryId)),
+    final query = _database.select(txs).join([
+      innerJoin(accs, accs.id.equalsExp(txs.accountId)),
+      innerJoin(cats, cats.id.equalsExp(txs.categoryId)),
     ]);
 
-    query.where(t.isDeleted.equals(false));
+    query.where(txs.isDeleted.equals(false));
 
     if (filters.accountIds?.isNotEmpty == true) {
-      query.where(t.accountId.isIn(filters.accountIds!));
+      query.where(txs.accountId.isIn(filters.accountIds!));
     }
     if (filters.categoryIds?.isNotEmpty == true) {
-      query.where(t.categoryId.isIn(filters.categoryIds!));
+      query.where(txs.categoryId.isIn(filters.categoryIds!));
     }
     if (filters.from != null) {
-      query.where(t.date.isBiggerOrEqualValue(filters.from!));
+      query.where(txs.date.isBiggerOrEqualValue(filters.from!));
     }
     if (filters.to != null) {
-      query.where(t.date.isSmallerOrEqualValue(filters.to!));
+      query.where(txs.date.isSmallerOrEqualValue(filters.to!));
     }
 
     final orderingMode = filters.direction == SortDirection.asc
@@ -140,9 +144,9 @@ class TransactionRepository {
 
     query.orderBy([
       if (filters.sortBy == TransactionSortField.date)
-        OrderingTerm(expression: t.date, mode: orderingMode)
+        OrderingTerm(expression: txs.date, mode: orderingMode)
       else
-        OrderingTerm(expression: t.amount, mode: orderingMode),
+        OrderingTerm(expression: txs.amount, mode: orderingMode),
     ]);
 
     if (page != null) {
@@ -153,9 +157,9 @@ class TransactionRepository {
     return rows
         .map(
           (row) => TransactionDetails.fromDB(
-            transaction: row.readTable(t),
-            account: row.readTable(a),
-            category: row.readTable(c),
+            transaction: row.readTable(txs),
+            account: row.readTable(accs),
+            category: row.readTable(cats),
           ),
         )
         .toList();

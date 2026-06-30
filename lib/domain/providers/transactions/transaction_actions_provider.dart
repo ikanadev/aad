@@ -15,12 +15,14 @@ class TransactionActions extends _$TransactionActions {
     required String categoryId,
     required int amount,
     required DateTime date,
+    String? comment,
   }) async {
     await ref.read(transactionRepositoryProvider).createTransaction(
       accountId: accountId,
       categoryId: categoryId,
       amount: amount,
       date: date,
+      comment: comment,
     );
     _invalidate();
   }
@@ -30,12 +32,14 @@ class TransactionActions extends _$TransactionActions {
     required String categoryId,
     required int amount,
     required DateTime date,
+    String? comment,
   }) async {
     await ref.read(transactionRepositoryProvider).editTransaction(
       id: id,
       categoryId: categoryId,
       amount: amount,
       date: date,
+      comment: comment,
     );
     _invalidate();
   }

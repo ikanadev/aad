@@ -28,6 +28,13 @@ flutter test
 bash tool/build_icons.sh
 ```
 
+## Development phase: no migrations
+
+The app is in active development and is assumed to run for the first time on a fresh
+device every time. Do **not** write Drift schema migrations or bump `schemaVersion` when
+changing tables — just change the table definition, regenerate, and reinstall. There is no
+production data to preserve yet.
+
 ## Architecture
 
 Data flows strictly through layers — screens never touch the database directly.

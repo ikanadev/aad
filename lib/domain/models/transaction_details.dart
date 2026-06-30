@@ -6,6 +6,7 @@ class TransactionDetails {
   final String id;
   final int amount; // cents, always positive
   final DateTime date;
+  final String? comment;
   final Account account;
   final Category category;
 
@@ -13,6 +14,7 @@ class TransactionDetails {
     required this.id,
     required this.amount,
     required this.date,
+    this.comment,
     required this.account,
     required this.category,
   });
@@ -26,6 +28,7 @@ class TransactionDetails {
       id: transaction.id,
       amount: transaction.amount,
       date: transaction.date,
+      comment: transaction.comment,
       account: Account.fromDB(account),
       category: Category.fromDB(category),
     );

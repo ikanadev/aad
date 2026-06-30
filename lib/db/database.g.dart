@@ -1082,6 +1082,17 @@ class $DbTransactionsTable extends DbTransactions
     type: DriftSqlType.dateTime,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _commentMeta = const VerificationMeta(
+    'comment',
+  );
+  @override
+  late final GeneratedColumn<String> comment = GeneratedColumn<String>(
+    'comment',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _serverVersionMeta = const VerificationMeta(
     'serverVersion',
   );
@@ -1131,6 +1142,7 @@ class $DbTransactionsTable extends DbTransactions
     categoryId,
     amount,
     date,
+    comment,
     serverVersion,
     isDirty,
     isDeleted,
@@ -1184,6 +1196,12 @@ class $DbTransactionsTable extends DbTransactions
     } else if (isInserting) {
       context.missing(_dateMeta);
     }
+    if (data.containsKey('comment')) {
+      context.handle(
+        _commentMeta,
+        comment.isAcceptableOrUnknown(data['comment']!, _commentMeta),
+      );
+    }
     if (data.containsKey('server_version')) {
       context.handle(
         _serverVersionMeta,
@@ -1234,6 +1252,10 @@ class $DbTransactionsTable extends DbTransactions
         DriftSqlType.dateTime,
         data['${effectivePrefix}date'],
       )!,
+      comment: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}comment'],
+      ),
       serverVersion: attachedDatabase.typeMapping.read(
         DriftSqlType.double,
         data['${effectivePrefix}server_version'],
@@ -1261,6 +1283,7 @@ class DbTransaction extends DataClass implements Insertable<DbTransaction> {
   final String categoryId;
   final int amount;
   final DateTime date;
+  final String? comment;
   final double serverVersion;
   final bool isDirty;
   final bool isDeleted;
@@ -1270,6 +1293,7 @@ class DbTransaction extends DataClass implements Insertable<DbTransaction> {
     required this.categoryId,
     required this.amount,
     required this.date,
+    this.comment,
     required this.serverVersion,
     required this.isDirty,
     required this.isDeleted,
@@ -1282,6 +1306,9 @@ class DbTransaction extends DataClass implements Insertable<DbTransaction> {
     map['category_id'] = Variable<String>(categoryId);
     map['amount'] = Variable<int>(amount);
     map['date'] = Variable<DateTime>(date);
+    if (!nullToAbsent || comment != null) {
+      map['comment'] = Variable<String>(comment);
+    }
     map['server_version'] = Variable<double>(serverVersion);
     map['is_dirty'] = Variable<bool>(isDirty);
     map['is_deleted'] = Variable<bool>(isDeleted);
@@ -1295,6 +1322,9 @@ class DbTransaction extends DataClass implements Insertable<DbTransaction> {
       categoryId: Value(categoryId),
       amount: Value(amount),
       date: Value(date),
+      comment: comment == null && nullToAbsent
+          ? const Value.absent()
+          : Value(comment),
       serverVersion: Value(serverVersion),
       isDirty: Value(isDirty),
       isDeleted: Value(isDeleted),
@@ -1312,6 +1342,7 @@ class DbTransaction extends DataClass implements Insertable<DbTransaction> {
       categoryId: serializer.fromJson<String>(json['categoryId']),
       amount: serializer.fromJson<int>(json['amount']),
       date: serializer.fromJson<DateTime>(json['date']),
+      comment: serializer.fromJson<String?>(json['comment']),
       serverVersion: serializer.fromJson<double>(json['serverVersion']),
       isDirty: serializer.fromJson<bool>(json['isDirty']),
       isDeleted: serializer.fromJson<bool>(json['isDeleted']),
@@ -1326,6 +1357,7 @@ class DbTransaction extends DataClass implements Insertable<DbTransaction> {
       'categoryId': serializer.toJson<String>(categoryId),
       'amount': serializer.toJson<int>(amount),
       'date': serializer.toJson<DateTime>(date),
+      'comment': serializer.toJson<String?>(comment),
       'serverVersion': serializer.toJson<double>(serverVersion),
       'isDirty': serializer.toJson<bool>(isDirty),
       'isDeleted': serializer.toJson<bool>(isDeleted),
@@ -1338,6 +1370,7 @@ class DbTransaction extends DataClass implements Insertable<DbTransaction> {
     String? categoryId,
     int? amount,
     DateTime? date,
+    Value<String?> comment = const Value.absent(),
     double? serverVersion,
     bool? isDirty,
     bool? isDeleted,
@@ -1347,6 +1380,7 @@ class DbTransaction extends DataClass implements Insertable<DbTransaction> {
     categoryId: categoryId ?? this.categoryId,
     amount: amount ?? this.amount,
     date: date ?? this.date,
+    comment: comment.present ? comment.value : this.comment,
     serverVersion: serverVersion ?? this.serverVersion,
     isDirty: isDirty ?? this.isDirty,
     isDeleted: isDeleted ?? this.isDeleted,
@@ -1360,6 +1394,7 @@ class DbTransaction extends DataClass implements Insertable<DbTransaction> {
           : this.categoryId,
       amount: data.amount.present ? data.amount.value : this.amount,
       date: data.date.present ? data.date.value : this.date,
+      comment: data.comment.present ? data.comment.value : this.comment,
       serverVersion: data.serverVersion.present
           ? data.serverVersion.value
           : this.serverVersion,
@@ -1376,6 +1411,7 @@ class DbTransaction extends DataClass implements Insertable<DbTransaction> {
           ..write('categoryId: $categoryId, ')
           ..write('amount: $amount, ')
           ..write('date: $date, ')
+          ..write('comment: $comment, ')
           ..write('serverVersion: $serverVersion, ')
           ..write('isDirty: $isDirty, ')
           ..write('isDeleted: $isDeleted')
@@ -1390,6 +1426,7 @@ class DbTransaction extends DataClass implements Insertable<DbTransaction> {
     categoryId,
     amount,
     date,
+    comment,
     serverVersion,
     isDirty,
     isDeleted,
@@ -1403,6 +1440,7 @@ class DbTransaction extends DataClass implements Insertable<DbTransaction> {
           other.categoryId == this.categoryId &&
           other.amount == this.amount &&
           other.date == this.date &&
+          other.comment == this.comment &&
           other.serverVersion == this.serverVersion &&
           other.isDirty == this.isDirty &&
           other.isDeleted == this.isDeleted);
@@ -1414,6 +1452,7 @@ class DbTransactionsCompanion extends UpdateCompanion<DbTransaction> {
   final Value<String> categoryId;
   final Value<int> amount;
   final Value<DateTime> date;
+  final Value<String?> comment;
   final Value<double> serverVersion;
   final Value<bool> isDirty;
   final Value<bool> isDeleted;
@@ -1424,6 +1463,7 @@ class DbTransactionsCompanion extends UpdateCompanion<DbTransaction> {
     this.categoryId = const Value.absent(),
     this.amount = const Value.absent(),
     this.date = const Value.absent(),
+    this.comment = const Value.absent(),
     this.serverVersion = const Value.absent(),
     this.isDirty = const Value.absent(),
     this.isDeleted = const Value.absent(),
@@ -1435,6 +1475,7 @@ class DbTransactionsCompanion extends UpdateCompanion<DbTransaction> {
     required String categoryId,
     required int amount,
     required DateTime date,
+    this.comment = const Value.absent(),
     this.serverVersion = const Value.absent(),
     this.isDirty = const Value.absent(),
     this.isDeleted = const Value.absent(),
@@ -1450,6 +1491,7 @@ class DbTransactionsCompanion extends UpdateCompanion<DbTransaction> {
     Expression<String>? categoryId,
     Expression<int>? amount,
     Expression<DateTime>? date,
+    Expression<String>? comment,
     Expression<double>? serverVersion,
     Expression<bool>? isDirty,
     Expression<bool>? isDeleted,
@@ -1461,6 +1503,7 @@ class DbTransactionsCompanion extends UpdateCompanion<DbTransaction> {
       if (categoryId != null) 'category_id': categoryId,
       if (amount != null) 'amount': amount,
       if (date != null) 'date': date,
+      if (comment != null) 'comment': comment,
       if (serverVersion != null) 'server_version': serverVersion,
       if (isDirty != null) 'is_dirty': isDirty,
       if (isDeleted != null) 'is_deleted': isDeleted,
@@ -1474,6 +1517,7 @@ class DbTransactionsCompanion extends UpdateCompanion<DbTransaction> {
     Value<String>? categoryId,
     Value<int>? amount,
     Value<DateTime>? date,
+    Value<String?>? comment,
     Value<double>? serverVersion,
     Value<bool>? isDirty,
     Value<bool>? isDeleted,
@@ -1485,6 +1529,7 @@ class DbTransactionsCompanion extends UpdateCompanion<DbTransaction> {
       categoryId: categoryId ?? this.categoryId,
       amount: amount ?? this.amount,
       date: date ?? this.date,
+      comment: comment ?? this.comment,
       serverVersion: serverVersion ?? this.serverVersion,
       isDirty: isDirty ?? this.isDirty,
       isDeleted: isDeleted ?? this.isDeleted,
@@ -1510,6 +1555,9 @@ class DbTransactionsCompanion extends UpdateCompanion<DbTransaction> {
     if (date.present) {
       map['date'] = Variable<DateTime>(date.value);
     }
+    if (comment.present) {
+      map['comment'] = Variable<String>(comment.value);
+    }
     if (serverVersion.present) {
       map['server_version'] = Variable<double>(serverVersion.value);
     }
@@ -1533,6 +1581,7 @@ class DbTransactionsCompanion extends UpdateCompanion<DbTransaction> {
           ..write('categoryId: $categoryId, ')
           ..write('amount: $amount, ')
           ..write('date: $date, ')
+          ..write('comment: $comment, ')
           ..write('serverVersion: $serverVersion, ')
           ..write('isDirty: $isDirty, ')
           ..write('isDeleted: $isDeleted, ')
@@ -2098,6 +2147,7 @@ typedef $$DbTransactionsTableCreateCompanionBuilder =
       required String categoryId,
       required int amount,
       required DateTime date,
+      Value<String?> comment,
       Value<double> serverVersion,
       Value<bool> isDirty,
       Value<bool> isDeleted,
@@ -2110,6 +2160,7 @@ typedef $$DbTransactionsTableUpdateCompanionBuilder =
       Value<String> categoryId,
       Value<int> amount,
       Value<DateTime> date,
+      Value<String?> comment,
       Value<double> serverVersion,
       Value<bool> isDirty,
       Value<bool> isDeleted,
@@ -2147,6 +2198,11 @@ class $$DbTransactionsTableFilterComposer
 
   ColumnFilters<DateTime> get date => $composableBuilder(
     column: $table.date,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get comment => $composableBuilder(
+    column: $table.comment,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -2200,6 +2256,11 @@ class $$DbTransactionsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get comment => $composableBuilder(
+    column: $table.comment,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<double> get serverVersion => $composableBuilder(
     column: $table.serverVersion,
     builder: (column) => ColumnOrderings(column),
@@ -2241,6 +2302,9 @@ class $$DbTransactionsTableAnnotationComposer
 
   GeneratedColumn<DateTime> get date =>
       $composableBuilder(column: $table.date, builder: (column) => column);
+
+  GeneratedColumn<String> get comment =>
+      $composableBuilder(column: $table.comment, builder: (column) => column);
 
   GeneratedColumn<double> get serverVersion => $composableBuilder(
     column: $table.serverVersion,
@@ -2292,6 +2356,7 @@ class $$DbTransactionsTableTableManager
                 Value<String> categoryId = const Value.absent(),
                 Value<int> amount = const Value.absent(),
                 Value<DateTime> date = const Value.absent(),
+                Value<String?> comment = const Value.absent(),
                 Value<double> serverVersion = const Value.absent(),
                 Value<bool> isDirty = const Value.absent(),
                 Value<bool> isDeleted = const Value.absent(),
@@ -2302,6 +2367,7 @@ class $$DbTransactionsTableTableManager
                 categoryId: categoryId,
                 amount: amount,
                 date: date,
+                comment: comment,
                 serverVersion: serverVersion,
                 isDirty: isDirty,
                 isDeleted: isDeleted,
@@ -2314,6 +2380,7 @@ class $$DbTransactionsTableTableManager
                 required String categoryId,
                 required int amount,
                 required DateTime date,
+                Value<String?> comment = const Value.absent(),
                 Value<double> serverVersion = const Value.absent(),
                 Value<bool> isDirty = const Value.absent(),
                 Value<bool> isDeleted = const Value.absent(),
@@ -2324,6 +2391,7 @@ class $$DbTransactionsTableTableManager
                 categoryId: categoryId,
                 amount: amount,
                 date: date,
+                comment: comment,
                 serverVersion: serverVersion,
                 isDirty: isDirty,
                 isDeleted: isDeleted,

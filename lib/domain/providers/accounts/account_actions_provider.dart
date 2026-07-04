@@ -4,7 +4,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'account_actions_provider.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 class AccountActions extends _$AccountActions {
   @override
   FutureOr<void> build() {}

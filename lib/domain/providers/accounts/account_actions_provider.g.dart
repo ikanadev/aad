@@ -20,7 +20,7 @@ final class AccountActionsProvider
         argument: null,
         retry: null,
         name: r'accountActionsProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -33,7 +33,7 @@ final class AccountActionsProvider
   AccountActions create() => AccountActions();
 }
 
-String _$accountActionsHash() => r'770fede86756d5ebf2fc7864776bcdf41a0e462a';
+String _$accountActionsHash() => r'3b185a2451ee4adc42bb3e1b16e775fa66150bdd';
 
 abstract class _$AccountActions extends $AsyncNotifier<void> {
   FutureOr<void> build();

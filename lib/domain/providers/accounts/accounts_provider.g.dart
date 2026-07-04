@@ -15,11 +15,13 @@ final accountsProvider = AccountsProvider._();
 final class AccountsProvider
     extends
         $FunctionalProvider<
-          AsyncValue<List<Account>>,
-          List<Account>,
-          FutureOr<List<Account>>
+          AsyncValue<List<AccountDetails>>,
+          List<AccountDetails>,
+          FutureOr<List<AccountDetails>>
         >
-    with $FutureModifier<List<Account>>, $FutureProvider<List<Account>> {
+    with
+        $FutureModifier<List<AccountDetails>>,
+        $FutureProvider<List<AccountDetails>> {
   AccountsProvider._()
     : super(
         from: null,
@@ -36,14 +38,14 @@ final class AccountsProvider
 
   @$internal
   @override
-  $FutureProviderElement<List<Account>> $createElement(
+  $FutureProviderElement<List<AccountDetails>> $createElement(
     $ProviderPointer pointer,
   ) => $FutureProviderElement(pointer);
 
   @override
-  FutureOr<List<Account>> create(Ref ref) {
+  FutureOr<List<AccountDetails>> create(Ref ref) {
     return accounts(ref);
   }
 }
 
-String _$accountsHash() => r'410db82e5ae9798b714fe9a5f4a0b77ebdf23876';
+String _$accountsHash() => r'07e74d332967ea004681e57142b51b46bb5db2fe';

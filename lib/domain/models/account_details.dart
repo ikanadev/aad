@@ -1,0 +1,21 @@
+import 'package:aad/domain/models/account.dart';
+
+class AccountDetails extends Account {
+  final int balance; // cents, net (income - expenses)
+
+  const AccountDetails({
+    required super.id,
+    required super.name,
+    required super.currencyCode,
+    required this.balance,
+  });
+
+  factory AccountDetails.fromAccount(Account account, {required int balance}) {
+    return AccountDetails(
+      id: account.id,
+      name: account.name,
+      currencyCode: account.currencyCode,
+      balance: balance,
+    );
+  }
+}

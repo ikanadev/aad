@@ -1,20 +1,19 @@
 import 'package:aad/db/database.dart';
 import 'package:aad/domain/models/account.dart';
 import 'package:aad/domain/models/category.dart';
+import 'package:aad/domain/models/transaction.dart';
 
-class TransactionDetails {
-  final String id;
-  final int amount; // cents, always positive
-  final DateTime date;
-  final String? comment;
+class TransactionDetails extends Transaction {
   final Account account;
   final Category category;
 
   const TransactionDetails({
-    required this.id,
-    required this.amount,
-    required this.date,
-    this.comment,
+    required super.id,
+    required super.accountId,
+    required super.categoryId,
+    required super.amount,
+    required super.date,
+    super.comment,
     required this.account,
     required this.category,
   });
@@ -26,6 +25,8 @@ class TransactionDetails {
   }) {
     return TransactionDetails(
       id: transaction.id,
+      accountId: transaction.accountId,
+      categoryId: transaction.categoryId,
       amount: transaction.amount,
       date: transaction.date,
       comment: transaction.comment,

@@ -4,8 +4,10 @@ import 'package:aad/screens/accounts/accounts_screen.dart';
 import 'package:aad/screens/accounts/edit_account_screen.dart';
 import 'package:aad/screens/accounts/new_account_screen.dart';
 import 'package:aad/screens/home/home_screen.dart';
+import 'package:aad/screens/categories/add_category_screen.dart';
 import 'package:aad/screens/categories/categories_screen.dart';
 import 'package:aad/screens/categories/edit_categories_screen.dart';
+import 'package:aad/screens/categories/edit_category_screen.dart';
 import 'package:aad/screens/stats/stats_screen.dart';
 import 'package:aad/screens/transactions/transactions_screen.dart';
 import 'package:aad/widgets/app_shell.dart';
@@ -27,6 +29,15 @@ final router = GoRouter(
               EditAccountScreen(accountId: state.pathParameters['id']!),
         ),
       ],
+    ),
+    GoRoute(
+      path: '/categories/new',
+      builder: (context, state) => const AddCategoryScreen(),
+    ),
+    GoRoute(
+      path: '/categories/:id/edit',
+      builder: (context, state) =>
+          EditCategoryScreen(categoryId: state.pathParameters['id']!),
     ),
     StatefulShellRoute.indexedStack(
       builder: (context, state, navigationShell) {

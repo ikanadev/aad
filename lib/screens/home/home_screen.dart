@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import 'package:aad/domain/providers/accounts/accounts_provider.dart';
 import 'package:aad/screens/home/widgets/account_item.dart';
+import 'package:aad/widgets/number_pad.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -52,6 +53,14 @@ class HomeScreen extends ConsumerWidget {
                 ),
               ),
               loading: () => const Center(child: CircularProgressIndicator()),
+            ),
+            const SizedBox(height: 24),
+            // Temporary preview of the number pad, remove later.
+            NumberPad(
+              onNumberPress: (number) => debugPrint('number: $number'),
+              onDecimalPress: () => debugPrint('decimal'),
+              onRemove: () => debugPrint('remove'),
+              onSubmit: () => debugPrint('submit'),
             ),
           ],
         ),

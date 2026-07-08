@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:aad/domain/models/category.dart';
+import 'package:aad/widgets/app_icon.dart';
 
 class CategoryCard extends StatelessWidget {
   const CategoryCard({
@@ -17,6 +18,7 @@ class CategoryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = category.flutterColor;
+    final icon = AppIcons.tryParse(category.iconName);
     return Card(
       clipBehavior: Clip.antiAlias,
       elevation: isDragging ? 8 : 1,
@@ -30,12 +32,9 @@ class CategoryCard extends StatelessWidget {
               CircleAvatar(
                 radius: 26,
                 backgroundColor: color.withValues(alpha: 0.14),
-                child: Text(
-                  category.iconName.isEmpty
-                      ? '?'
-                      : category.iconName.characters.first.toUpperCase(),
-                  style: TextStyle(color: color, fontWeight: FontWeight.bold),
-                ),
+                child: icon == null
+                    ? Icon(Icons.category_outlined, color: color)
+                    : AppIcon(icon: icon, size: 26),
               ),
               const SizedBox(height: 10),
               Text(

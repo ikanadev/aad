@@ -51,4 +51,11 @@ enum AppIcons {
   travel;
 
   String get assetPath => 'assets/icons/vec/$name.vec';
+
+  static AppIcons? tryParse(String value) {
+    for (final icon in values) {
+      if (icon.name == value) return icon;
+    }
+    return null;
+  }
 }

@@ -20,7 +20,7 @@ final class CategoryActionsProvider
         argument: null,
         retry: null,
         name: r'categoryActionsProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -33,7 +33,7 @@ final class CategoryActionsProvider
   CategoryActions create() => CategoryActions();
 }
 
-String _$categoryActionsHash() => r'941fc6c182dd1982b1d439dfab32245d32cb9552';
+String _$categoryActionsHash() => r'f1fb11336943adf2a1b58c758be416f139a1753e';
 
 abstract class _$CategoryActions extends $AsyncNotifier<void> {
   FutureOr<void> build();

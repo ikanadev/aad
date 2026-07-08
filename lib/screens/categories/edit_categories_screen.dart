@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:aad/domain/models/category.dart';
 import 'package:aad/domain/providers/categories/categories_provider.dart';
-import 'package:aad/domain/providers/categories/category_actions_provider.dart';
-import 'package:aad/screens/categories/widgets/category_bottom_sheet.dart';
 import 'package:aad/screens/categories/widgets/category_section_title.dart';
 import 'package:aad/screens/categories/widgets/editable_category_tile.dart';
 
@@ -18,7 +17,7 @@ class EditCategoriesScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Edit categories')),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => _showCategorySheet(context, ref),
+        onPressed: () => context.push('/categories/new'),
         child: const Icon(Icons.add),
       ),
       body: categoriesValue.when(
@@ -44,8 +43,7 @@ class EditCategoriesScreen extends ConsumerWidget {
               for (final category in expenses)
                 EditableCategoryTile(
                   category: category,
-                  onTap: () =>
-                      _showCategorySheet(context, ref, category: category),
+                  onTap: () => context.push('/categories/${category.id}/edit'),
                 ),
               const SizedBox(height: 16),
               CategorySectionTitle(
@@ -55,8 +53,7 @@ class EditCategoriesScreen extends ConsumerWidget {
               for (final category in incomes)
                 EditableCategoryTile(
                   category: category,
-                  onTap: () =>
-                      _showCategorySheet(context, ref, category: category),
+                  onTap: () => context.push('/categories/${category.id}/edit'),
                 ),
             ],
           );
@@ -70,75 +67,5 @@ class EditCategoriesScreen extends ConsumerWidget {
         loading: () => const Center(child: CircularProgressIndicator()),
       ),
     );
-  }
-
-  Future<void> _showCategorySheet(
-    BuildContext context,
-    WidgetRef ref, {
-    Category? category,
-  }) async {
-    final result = await showModalBottomSheet<CategoryBottomSheetResult>(
-      context: context,
-      isScrollControlled: true,
-      builder: (context) => CategoryBottomSheet(category: category),
-    );
-
-    if (result == null || !context.mounted) return;
-
-    if (result.deleteRequested && category != null) {
-      await _confirmDelete(context, ref, category);
-      return;
-    }
-
-    if (category == null) {
-      await ref
-          .read(categoryActionsProvider.notifier)
-          .createCategory(
-            name: result.name,
-            iconName: result.iconName,
-            type: result.type,
-            color: result.color,
-          );
-      return;
-    }
-
-    await ref
-        .read(categoryActionsProvider.notifier)
-        .updateCategory(
-          id: category.id,
-          name: result.name,
-          iconName: result.iconName,
-          type: result.type,
-          color: result.color,
-        );
-  }
-
-  Future<void> _confirmDelete(
-    BuildContext context,
-    WidgetRef ref,
-    Category category,
-  ) async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Remove category?'),
-        content: Text(
-          'Are you sure you want to remove ${category.name} category? N transactions will be lost',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancel'),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('Remove'),
-          ),
-        ],
-      ),
-    );
-
-    if (confirmed != true) return;
-    await ref.read(categoryActionsProvider.notifier).deleteCategory(id: category.id);
   }
 }

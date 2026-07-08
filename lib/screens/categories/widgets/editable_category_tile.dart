@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:aad/domain/models/category.dart';
+import 'package:aad/widgets/app_icon.dart';
 
 class EditableCategoryTile extends StatelessWidget {
   const EditableCategoryTile({
@@ -15,20 +16,18 @@ class EditableCategoryTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = category.flutterColor;
+    final icon = AppIcons.tryParse(category.iconName);
     return Card(
       child: ListTile(
         onTap: onTap,
         leading: CircleAvatar(
           backgroundColor: color.withValues(alpha: 0.14),
-          child: Text(
-            category.iconName.isEmpty
-                ? '?'
-                : category.iconName.characters.first.toUpperCase(),
-            style: TextStyle(color: color, fontWeight: FontWeight.bold),
-          ),
+          child: icon == null
+              ? Icon(Icons.category_outlined, color: color)
+              : AppIcon(icon: icon, size: 24),
         ),
         title: Text(category.name),
-        subtitle: Text('${category.type.label} • ${category.iconName}'),
+        subtitle: Text(category.type.label),
         trailing: const Icon(Icons.edit_outlined),
       ),
     );

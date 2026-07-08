@@ -5,7 +5,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'category_actions_provider.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 class CategoryActions extends _$CategoryActions {
   @override
   FutureOr<void> build() {}

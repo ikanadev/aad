@@ -1,3 +1,4 @@
+import 'package:aad/dev/dev_seeder.dart';
 import 'package:aad/domain/models/category.dart';
 import 'package:aad/utils/db_constants.dart';
 import 'package:drift/drift.dart';
@@ -50,6 +51,9 @@ class AppDatabase extends _$AppDatabase {
               isDeleted: false,
             ),
           );
+        }
+        if (shouldSeedDevData) {
+          await seedDevData(this);
         }
       },
     );

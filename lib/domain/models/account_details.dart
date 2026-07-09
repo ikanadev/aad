@@ -7,6 +7,7 @@ class AccountDetails extends Account {
     required super.id,
     required super.name,
     required super.currencyCode,
+    required super.isDefault,
     required this.balance,
   });
 
@@ -15,6 +16,7 @@ class AccountDetails extends Account {
       id: account.id,
       name: account.name,
       currencyCode: account.currencyCode,
+      isDefault: account.isDefault,
       balance: balance,
     );
   }

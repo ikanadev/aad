@@ -13,7 +13,8 @@ class AccountForm extends StatefulWidget {
 
   final Account? account;
   final String submitLabel;
-  final Future<void> Function(String name, String currencyCode) onSubmit;
+  final Future<void> Function(String name, String currencyCode, bool isDefault)
+  onSubmit;
 
   bool get isEditing => account != null;
 
@@ -25,8 +26,13 @@ class _AccountFormState extends State<AccountForm> {
   final _formKey = GlobalKey<FormState>();
   late final TextEditingController _nameController;
   late String _currencyCode;
+  late bool _isDefault;
   bool _saving = false;
   String? _error;
+
+  // The current default can't be untoggled directly; the default only moves
+  // when another account claims it.
+  bool get _lockedAsDefault => widget.account?.isDefault ?? false;
 
   @override
   void initState() {
@@ -34,6 +40,7 @@ class _AccountFormState extends State<AccountForm> {
     _nameController = TextEditingController(text: widget.account?.name ?? '');
     _currencyCode =
         widget.account?.currencyCode ?? supportedCurrencies.first.code;
+    _isDefault = widget.account?.isDefault ?? false;
   }
 
   @override
@@ -103,6 +110,20 @@ class _AccountFormState extends State<AccountForm> {
                 setState(() => _currencyCode = value);
               },
             ),
+          const SizedBox(height: 16),
+          SwitchListTile(
+            title: const Text('Default account'),
+            subtitle: Text(
+              _lockedAsDefault
+                  ? 'To change it, make another account the default'
+                  : 'Preselected when creating a transaction',
+            ),
+            contentPadding: EdgeInsets.zero,
+            value: _isDefault,
+            onChanged: _lockedAsDefault
+                ? null
+                : (value) => setState(() => _isDefault = value),
+          ),
           const SizedBox(height: 24),
           FilledButton(
             onPressed: _saving ? null : _submit,
@@ -128,7 +149,11 @@ class _AccountFormState extends State<AccountForm> {
     });
 
     try {
-      await widget.onSubmit(_nameController.text.trim(), _currencyCode);
+      await widget.onSubmit(
+        _nameController.text.trim(),
+        _currencyCode,
+        _isDefault,
+      );
     } catch (error) {
       if (mounted) setState(() => _error = 'Could not save account: $error');
     } finally {

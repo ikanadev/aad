@@ -14,8 +14,8 @@ class NewAccountScreen extends ConsumerWidget {
       appBar: AppBar(title: const Text('Add account')),
       body: AccountForm(
         submitLabel: 'Create account',
-        onSubmit: (name, currencyCode) =>
-            _create(context, ref, name, currencyCode),
+        onSubmit: (name, currencyCode, isDefault) =>
+            _create(context, ref, name, currencyCode, isDefault),
       ),
     );
   }
@@ -25,10 +25,15 @@ class NewAccountScreen extends ConsumerWidget {
     WidgetRef ref,
     String name,
     String currencyCode,
+    bool isDefault,
   ) async {
     await ref
         .read(accountActionsProvider.notifier)
-        .createAccount(name: name, currencyCode: currencyCode);
+        .createAccount(
+          name: name,
+          currencyCode: currencyCode,
+          isDefault: isDefault,
+        );
 
     if (context.mounted) context.pop();
   }

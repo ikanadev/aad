@@ -10,12 +10,14 @@ class CategoryGrid extends StatelessWidget {
     required this.accentColor,
     required this.categories,
     required this.onReorder,
+    required this.onCategoryTap,
   });
 
   final CategoryType type;
   final Color accentColor;
   final List<Category> categories;
   final ValueChanged<List<Category>> onReorder;
+  final ValueChanged<Category> onCategoryTap;
 
   @override
   Widget build(BuildContext context) {
@@ -36,6 +38,7 @@ class CategoryGrid extends StatelessWidget {
     return ReorderableCategoryGridView(
       categories: categories,
       onReorder: onReorder,
+      onCategoryTap: onCategoryTap,
     );
   }
 }

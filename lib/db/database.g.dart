@@ -38,6 +38,21 @@ class $DbAccountsTable extends DbAccounts
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _isDefaultMeta = const VerificationMeta(
+    'isDefault',
+  );
+  @override
+  late final GeneratedColumn<bool> isDefault = GeneratedColumn<bool>(
+    'is_default',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_default" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
   static const VerificationMeta _serverVersionMeta = const VerificationMeta(
     'serverVersion',
   );
@@ -85,6 +100,7 @@ class $DbAccountsTable extends DbAccounts
     id,
     name,
     currencyCode,
+    isDefault,
     serverVersion,
     isDirty,
     isDeleted,
@@ -124,6 +140,12 @@ class $DbAccountsTable extends DbAccounts
       );
     } else if (isInserting) {
       context.missing(_currencyCodeMeta);
+    }
+    if (data.containsKey('is_default')) {
+      context.handle(
+        _isDefaultMeta,
+        isDefault.isAcceptableOrUnknown(data['is_default']!, _isDefaultMeta),
+      );
     }
     if (data.containsKey('server_version')) {
       context.handle(
@@ -167,6 +189,10 @@ class $DbAccountsTable extends DbAccounts
         DriftSqlType.string,
         data['${effectivePrefix}currency_code'],
       )!,
+      isDefault: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_default'],
+      )!,
       serverVersion: attachedDatabase.typeMapping.read(
         DriftSqlType.double,
         data['${effectivePrefix}server_version'],
@@ -192,6 +218,7 @@ class DbAccount extends DataClass implements Insertable<DbAccount> {
   final String id;
   final String name;
   final String currencyCode;
+  final bool isDefault;
   final double serverVersion;
   final bool isDirty;
   final bool isDeleted;
@@ -199,6 +226,7 @@ class DbAccount extends DataClass implements Insertable<DbAccount> {
     required this.id,
     required this.name,
     required this.currencyCode,
+    required this.isDefault,
     required this.serverVersion,
     required this.isDirty,
     required this.isDeleted,
@@ -209,6 +237,7 @@ class DbAccount extends DataClass implements Insertable<DbAccount> {
     map['id'] = Variable<String>(id);
     map['name'] = Variable<String>(name);
     map['currency_code'] = Variable<String>(currencyCode);
+    map['is_default'] = Variable<bool>(isDefault);
     map['server_version'] = Variable<double>(serverVersion);
     map['is_dirty'] = Variable<bool>(isDirty);
     map['is_deleted'] = Variable<bool>(isDeleted);
@@ -220,6 +249,7 @@ class DbAccount extends DataClass implements Insertable<DbAccount> {
       id: Value(id),
       name: Value(name),
       currencyCode: Value(currencyCode),
+      isDefault: Value(isDefault),
       serverVersion: Value(serverVersion),
       isDirty: Value(isDirty),
       isDeleted: Value(isDeleted),
@@ -235,6 +265,7 @@ class DbAccount extends DataClass implements Insertable<DbAccount> {
       id: serializer.fromJson<String>(json['id']),
       name: serializer.fromJson<String>(json['name']),
       currencyCode: serializer.fromJson<String>(json['currencyCode']),
+      isDefault: serializer.fromJson<bool>(json['isDefault']),
       serverVersion: serializer.fromJson<double>(json['serverVersion']),
       isDirty: serializer.fromJson<bool>(json['isDirty']),
       isDeleted: serializer.fromJson<bool>(json['isDeleted']),
@@ -247,6 +278,7 @@ class DbAccount extends DataClass implements Insertable<DbAccount> {
       'id': serializer.toJson<String>(id),
       'name': serializer.toJson<String>(name),
       'currencyCode': serializer.toJson<String>(currencyCode),
+      'isDefault': serializer.toJson<bool>(isDefault),
       'serverVersion': serializer.toJson<double>(serverVersion),
       'isDirty': serializer.toJson<bool>(isDirty),
       'isDeleted': serializer.toJson<bool>(isDeleted),
@@ -257,6 +289,7 @@ class DbAccount extends DataClass implements Insertable<DbAccount> {
     String? id,
     String? name,
     String? currencyCode,
+    bool? isDefault,
     double? serverVersion,
     bool? isDirty,
     bool? isDeleted,
@@ -264,6 +297,7 @@ class DbAccount extends DataClass implements Insertable<DbAccount> {
     id: id ?? this.id,
     name: name ?? this.name,
     currencyCode: currencyCode ?? this.currencyCode,
+    isDefault: isDefault ?? this.isDefault,
     serverVersion: serverVersion ?? this.serverVersion,
     isDirty: isDirty ?? this.isDirty,
     isDeleted: isDeleted ?? this.isDeleted,
@@ -275,6 +309,7 @@ class DbAccount extends DataClass implements Insertable<DbAccount> {
       currencyCode: data.currencyCode.present
           ? data.currencyCode.value
           : this.currencyCode,
+      isDefault: data.isDefault.present ? data.isDefault.value : this.isDefault,
       serverVersion: data.serverVersion.present
           ? data.serverVersion.value
           : this.serverVersion,
@@ -289,6 +324,7 @@ class DbAccount extends DataClass implements Insertable<DbAccount> {
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('currencyCode: $currencyCode, ')
+          ..write('isDefault: $isDefault, ')
           ..write('serverVersion: $serverVersion, ')
           ..write('isDirty: $isDirty, ')
           ..write('isDeleted: $isDeleted')
@@ -297,8 +333,15 @@ class DbAccount extends DataClass implements Insertable<DbAccount> {
   }
 
   @override
-  int get hashCode =>
-      Object.hash(id, name, currencyCode, serverVersion, isDirty, isDeleted);
+  int get hashCode => Object.hash(
+    id,
+    name,
+    currencyCode,
+    isDefault,
+    serverVersion,
+    isDirty,
+    isDeleted,
+  );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -306,6 +349,7 @@ class DbAccount extends DataClass implements Insertable<DbAccount> {
           other.id == this.id &&
           other.name == this.name &&
           other.currencyCode == this.currencyCode &&
+          other.isDefault == this.isDefault &&
           other.serverVersion == this.serverVersion &&
           other.isDirty == this.isDirty &&
           other.isDeleted == this.isDeleted);
@@ -315,6 +359,7 @@ class DbAccountsCompanion extends UpdateCompanion<DbAccount> {
   final Value<String> id;
   final Value<String> name;
   final Value<String> currencyCode;
+  final Value<bool> isDefault;
   final Value<double> serverVersion;
   final Value<bool> isDirty;
   final Value<bool> isDeleted;
@@ -323,6 +368,7 @@ class DbAccountsCompanion extends UpdateCompanion<DbAccount> {
     this.id = const Value.absent(),
     this.name = const Value.absent(),
     this.currencyCode = const Value.absent(),
+    this.isDefault = const Value.absent(),
     this.serverVersion = const Value.absent(),
     this.isDirty = const Value.absent(),
     this.isDeleted = const Value.absent(),
@@ -332,6 +378,7 @@ class DbAccountsCompanion extends UpdateCompanion<DbAccount> {
     required String id,
     required String name,
     required String currencyCode,
+    this.isDefault = const Value.absent(),
     this.serverVersion = const Value.absent(),
     this.isDirty = const Value.absent(),
     this.isDeleted = const Value.absent(),
@@ -343,6 +390,7 @@ class DbAccountsCompanion extends UpdateCompanion<DbAccount> {
     Expression<String>? id,
     Expression<String>? name,
     Expression<String>? currencyCode,
+    Expression<bool>? isDefault,
     Expression<double>? serverVersion,
     Expression<bool>? isDirty,
     Expression<bool>? isDeleted,
@@ -352,6 +400,7 @@ class DbAccountsCompanion extends UpdateCompanion<DbAccount> {
       if (id != null) 'id': id,
       if (name != null) 'name': name,
       if (currencyCode != null) 'currency_code': currencyCode,
+      if (isDefault != null) 'is_default': isDefault,
       if (serverVersion != null) 'server_version': serverVersion,
       if (isDirty != null) 'is_dirty': isDirty,
       if (isDeleted != null) 'is_deleted': isDeleted,
@@ -363,6 +412,7 @@ class DbAccountsCompanion extends UpdateCompanion<DbAccount> {
     Value<String>? id,
     Value<String>? name,
     Value<String>? currencyCode,
+    Value<bool>? isDefault,
     Value<double>? serverVersion,
     Value<bool>? isDirty,
     Value<bool>? isDeleted,
@@ -372,6 +422,7 @@ class DbAccountsCompanion extends UpdateCompanion<DbAccount> {
       id: id ?? this.id,
       name: name ?? this.name,
       currencyCode: currencyCode ?? this.currencyCode,
+      isDefault: isDefault ?? this.isDefault,
       serverVersion: serverVersion ?? this.serverVersion,
       isDirty: isDirty ?? this.isDirty,
       isDeleted: isDeleted ?? this.isDeleted,
@@ -390,6 +441,9 @@ class DbAccountsCompanion extends UpdateCompanion<DbAccount> {
     }
     if (currencyCode.present) {
       map['currency_code'] = Variable<String>(currencyCode.value);
+    }
+    if (isDefault.present) {
+      map['is_default'] = Variable<bool>(isDefault.value);
     }
     if (serverVersion.present) {
       map['server_version'] = Variable<double>(serverVersion.value);
@@ -412,6 +466,7 @@ class DbAccountsCompanion extends UpdateCompanion<DbAccount> {
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('currencyCode: $currencyCode, ')
+          ..write('isDefault: $isDefault, ')
           ..write('serverVersion: $serverVersion, ')
           ..write('isDirty: $isDirty, ')
           ..write('isDeleted: $isDeleted, ')
@@ -1628,6 +1683,7 @@ typedef $$DbAccountsTableCreateCompanionBuilder =
       required String id,
       required String name,
       required String currencyCode,
+      Value<bool> isDefault,
       Value<double> serverVersion,
       Value<bool> isDirty,
       Value<bool> isDeleted,
@@ -1638,6 +1694,7 @@ typedef $$DbAccountsTableUpdateCompanionBuilder =
       Value<String> id,
       Value<String> name,
       Value<String> currencyCode,
+      Value<bool> isDefault,
       Value<double> serverVersion,
       Value<bool> isDirty,
       Value<bool> isDeleted,
@@ -1665,6 +1722,11 @@ class $$DbAccountsTableFilterComposer
 
   ColumnFilters<String> get currencyCode => $composableBuilder(
     column: $table.currencyCode,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isDefault => $composableBuilder(
+    column: $table.isDefault,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -1708,6 +1770,11 @@ class $$DbAccountsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<bool> get isDefault => $composableBuilder(
+    column: $table.isDefault,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<double> get serverVersion => $composableBuilder(
     column: $table.serverVersion,
     builder: (column) => ColumnOrderings(column),
@@ -1743,6 +1810,9 @@ class $$DbAccountsTableAnnotationComposer
     column: $table.currencyCode,
     builder: (column) => column,
   );
+
+  GeneratedColumn<bool> get isDefault =>
+      $composableBuilder(column: $table.isDefault, builder: (column) => column);
 
   GeneratedColumn<double> get serverVersion => $composableBuilder(
     column: $table.serverVersion,
@@ -1790,6 +1860,7 @@ class $$DbAccountsTableTableManager
                 Value<String> id = const Value.absent(),
                 Value<String> name = const Value.absent(),
                 Value<String> currencyCode = const Value.absent(),
+                Value<bool> isDefault = const Value.absent(),
                 Value<double> serverVersion = const Value.absent(),
                 Value<bool> isDirty = const Value.absent(),
                 Value<bool> isDeleted = const Value.absent(),
@@ -1798,6 +1869,7 @@ class $$DbAccountsTableTableManager
                 id: id,
                 name: name,
                 currencyCode: currencyCode,
+                isDefault: isDefault,
                 serverVersion: serverVersion,
                 isDirty: isDirty,
                 isDeleted: isDeleted,
@@ -1808,6 +1880,7 @@ class $$DbAccountsTableTableManager
                 required String id,
                 required String name,
                 required String currencyCode,
+                Value<bool> isDefault = const Value.absent(),
                 Value<double> serverVersion = const Value.absent(),
                 Value<bool> isDirty = const Value.absent(),
                 Value<bool> isDeleted = const Value.absent(),
@@ -1816,6 +1889,7 @@ class $$DbAccountsTableTableManager
                 id: id,
                 name: name,
                 currencyCode: currencyCode,
+                isDefault: isDefault,
                 serverVersion: serverVersion,
                 isDirty: isDirty,
                 isDeleted: isDeleted,

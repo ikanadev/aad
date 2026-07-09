@@ -50,7 +50,8 @@ class _EditAccountScreenState extends ConsumerState<EditAccountScreen> {
           return AccountForm(
             account: account,
             submitLabel: 'Save changes',
-            onSubmit: (name, currencyCode) => _save(name),
+            onSubmit: (name, currencyCode, isDefault) =>
+                _save(name, isDefault),
           );
         },
         error: (error, stackTrace) => Center(
@@ -71,10 +72,10 @@ class _EditAccountScreenState extends ConsumerState<EditAccountScreen> {
     return null;
   }
 
-  Future<void> _save(String name) async {
+  Future<void> _save(String name, bool isDefault) async {
     await ref
         .read(accountActionsProvider.notifier)
-        .editAccount(id: widget.accountId, name: name);
+        .editAccount(id: widget.accountId, name: name, isDefault: isDefault);
 
     if (mounted) context.pop();
   }

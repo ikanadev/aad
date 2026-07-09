@@ -17,7 +17,19 @@ class AccountItem extends StatelessWidget {
     return Card(
       child: ListTile(
         onTap: onTap,
-        title: Text(account.name),
+        title: Row(
+          children: [
+            Flexible(child: Text(account.name)),
+            if (account.isDefault) ...[
+              const SizedBox(width: 6),
+              Icon(
+                Icons.star,
+                size: 16,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+            ],
+          ],
+        ),
         subtitle: Text('${currency.name} (${currency.code})'),
         trailing: Text(
           '$balanceFormatted ${currency.symbol} ${currency.code}',

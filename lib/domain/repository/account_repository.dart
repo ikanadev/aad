@@ -14,21 +14,27 @@ class AccountRepository {
   Future<String> createAccount({
     required String name,
     required String currencyCode,
+    required bool isDefault,
   }) async {
     final id = _uuid.v4();
 
-    await _database
-        .into(_database.dbAccounts)
-        .insert(
-          DbAccountsCompanion.insert(
-            id: id,
-            name: name.trim(),
-            currencyCode: currencyCode.trim().toUpperCase(),
-            serverVersion: const Value(0),
-            isDirty: const Value(true),
-            isDeleted: const Value(false),
-          ),
-        );
+    await _database.transaction(() async {
+      if (isDefault) await _clearDefaultAccount();
+
+      await _database
+          .into(_database.dbAccounts)
+          .insert(
+            DbAccountsCompanion.insert(
+              id: id,
+              name: name.trim(),
+              currencyCode: currencyCode.trim().toUpperCase(),
+              isDefault: Value(isDefault),
+              serverVersion: const Value(0),
+              isDirty: const Value(true),
+              isDeleted: const Value(false),
+            ),
+          );
+    });
 
     return id;
   }
@@ -43,25 +49,43 @@ class AccountRepository {
     return rows.map(Account.fromDB).toList();
   }
 
-  Future<void> editAccountName({
+  Future<void> editAccount({
     required String id,
     required String name,
+    required bool isDefault,
   }) async {
-    await (_database.update(
-      _database.dbAccounts,
-    )..where((account) => account.id.equals(id))).write(
-      DbAccountsCompanion(
-        name: Value(name.trim()),
-        isDirty: const Value(true),
-      ),
-    );
+    await _database.transaction(() async {
+      if (isDefault) await _clearDefaultAccount();
+
+      await (_database.update(
+        _database.dbAccounts,
+      )..where((account) => account.id.equals(id))).write(
+        DbAccountsCompanion(
+          name: Value(name.trim()),
+          isDefault: Value(isDefault),
+          isDirty: const Value(true),
+        ),
+      );
+    });
   }
 
   Future<void> deleteAccount({required String id}) async {
     await (_database.update(
       _database.dbAccounts,
     )..where((account) => account.id.equals(id))).write(
-      const DbAccountsCompanion(isDeleted: Value(true), isDirty: Value(true)),
+      const DbAccountsCompanion(
+        isDeleted: Value(true),
+        isDefault: Value(false),
+        isDirty: Value(true),
+      ),
+    );
+  }
+
+  Future<void> _clearDefaultAccount() async {
+    await (_database.update(
+      _database.dbAccounts,
+    )..where((account) => account.isDefault.equals(true))).write(
+      const DbAccountsCompanion(isDefault: Value(false), isDirty: Value(true)),
     );
   }
 

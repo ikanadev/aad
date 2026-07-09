@@ -3,8 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:aad/domain/models/category.dart';
+import 'package:aad/domain/providers/accounts/default_account_provider.dart';
 import 'package:aad/domain/providers/categories/categories_provider.dart';
 import 'package:aad/domain/providers/categories/category_actions_provider.dart';
+import 'package:aad/screens/categories/widgets/add_transaction_sheet.dart';
 import 'package:aad/screens/categories/widgets/category_grid.dart';
 
 class CategoriesScreen extends ConsumerStatefulWidget {
@@ -70,6 +72,7 @@ class _CategoriesScreenState extends ConsumerState<CategoriesScreen>
                     type: CategoryType.expense,
                     categories: reordered,
                   ),
+              onCategoryTap: _openAddTransaction,
             ),
             CategoryGrid(
               type: CategoryType.income,
@@ -83,6 +86,7 @@ class _CategoriesScreenState extends ConsumerState<CategoriesScreen>
                     type: CategoryType.income,
                     categories: reordered,
                   ),
+              onCategoryTap: _openAddTransaction,
             ),
           ],
         ),
@@ -94,6 +98,17 @@ class _CategoriesScreenState extends ConsumerState<CategoriesScreen>
         ),
         loading: () => const Center(child: CircularProgressIndicator()),
       ),
+    );
+  }
+
+  Future<void> _openAddTransaction(Category category) async {
+    final defaultAccount = await ref.read(defaultAccountProvider.future);
+    if (!mounted) return;
+
+    await showAddTransactionSheet(
+      context,
+      category: category,
+      initialAccount: defaultAccount,
     );
   }
 }

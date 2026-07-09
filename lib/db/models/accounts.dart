@@ -7,6 +7,8 @@ class DbAccounts extends Table {
 
   late final currencyCode = text()();
 
+  late final isDefault = boolean().withDefault(const Constant(false))();
+
   late final serverVersion = real().withDefault(const Constant(0))();
 
   late final isDirty = boolean().withDefault(const Constant(false))();

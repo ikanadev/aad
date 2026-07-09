@@ -34,6 +34,11 @@ final router = GoRouter(
       path: '/categories/new',
       builder: (context, state) => const AddCategoryScreen(),
     ),
+    // Must stay above '/categories/:id/edit' so 'edit' isn't matched as an id.
+    GoRoute(
+      path: '/categories/edit',
+      builder: (context, state) => const EditCategoriesScreen(),
+    ),
     GoRoute(
       path: '/categories/:id/edit',
       builder: (context, state) =>
@@ -57,12 +62,6 @@ final router = GoRouter(
             GoRoute(
               path: '/categories',
               builder: (context, state) => const CategoriesScreen(),
-              routes: [
-                GoRoute(
-                  path: 'edit',
-                  builder: (context, state) => const EditCategoriesScreen(),
-                ),
-              ],
             ),
           ],
         ),

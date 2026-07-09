@@ -8,10 +8,12 @@ class ReorderableCategoryGridView extends StatefulWidget {
     super.key,
     required this.categories,
     required this.onReorder,
+    required this.onCategoryTap,
   });
 
   final List<Category> categories;
   final ValueChanged<List<Category>> onReorder;
+  final ValueChanged<Category> onCategoryTap;
 
   @override
   State<ReorderableCategoryGridView> createState() =>
@@ -74,19 +76,7 @@ class _ReorderableCategoryGridViewState
                 child: CategoryCard(
                   category: category,
                   isDragging: _draggingId == category.id,
-                  onTap: () => showDialog<void>(
-                    context: context,
-                    builder: (context) => AlertDialog(
-                      title: Text(category.name),
-                      content: const Text('Todo'),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.of(context).pop(),
-                          child: const Text('OK'),
-                        ),
-                      ],
-                    ),
-                  ),
+                  onTap: () => widget.onCategoryTap(category),
                 ),
               ),
             );

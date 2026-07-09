@@ -1,3 +1,4 @@
+import 'package:aad/domain/providers/accounts/accounts_provider.dart';
 import 'package:aad/domain/providers/transactions/today_transactions_provider.dart';
 import 'package:aad/domain/providers/transactions/transactions_provider.dart';
 import 'package:aad/domain/repository/transaction_repository_provider.dart';
@@ -5,7 +6,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'transaction_actions_provider.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 class TransactionActions extends _$TransactionActions {
   @override
   FutureOr<void> build() {}
@@ -52,5 +53,7 @@ class TransactionActions extends _$TransactionActions {
   void _invalidate() {
     ref.invalidate(transactionsListProvider);
     ref.invalidate(todayTransactionsProvider);
+    // Transactions change account balances.
+    ref.invalidate(accountsProvider);
   }
 }

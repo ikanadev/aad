@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:aad/domain/models/account.dart';
-import 'package:aad/screens/home/utils/currency_utils.dart';
+import 'package:aad/utils/currency_utils.dart';
 
 class AccountForm extends StatefulWidget {
   const AccountForm({

@@ -6,7 +6,7 @@ import 'package:aad/domain/models/category.dart';
 import 'package:aad/domain/providers/accounts/accounts_provider.dart';
 import 'package:aad/domain/providers/categories/categories_provider.dart';
 import 'package:aad/domain/providers/transactions/transaction_actions_provider.dart';
-import 'package:aad/screens/home/utils/currency_utils.dart';
+import 'package:aad/utils/currency_utils.dart';
 import 'package:aad/widgets/amount_editor.dart';
 import 'package:aad/widgets/app_icon.dart';
 import 'package:aad/widgets/number_pad.dart';

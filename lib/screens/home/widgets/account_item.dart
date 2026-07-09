@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:aad/domain/models/account_details.dart';
-import 'package:aad/screens/home/utils/currency_utils.dart';
+import 'package:aad/utils/currency_utils.dart';
 
 class AccountItem extends StatelessWidget {
   const AccountItem({super.key, required this.account, required this.onTap});

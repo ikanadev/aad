@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:aad/domain/models/category.dart';
 import 'package:aad/domain/models/transaction_details.dart';
-import 'package:aad/screens/home/utils/currency_utils.dart';
+import 'package:aad/utils/currency_utils.dart';
 import 'package:aad/widgets/app_icon.dart';
 
 class TransactionItem extends StatelessWidget {

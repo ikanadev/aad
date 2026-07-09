@@ -2,6 +2,7 @@ import 'package:drift/drift.dart';
 import 'package:uuid/uuid.dart';
 
 import 'package:aad/db/database.dart';
+import 'package:aad/domain/models/category.dart';
 import 'package:aad/domain/models/transaction_details.dart';
 import 'package:aad/domain/models/transaction_filters.dart';
 
@@ -92,6 +93,33 @@ class TransactionRepository {
     );
   }
 
+  Future<Map<String, int>> getTotalsByCurrency(
+    TransactionFilters filters,
+  ) async {
+    final txs = _database.dbTransactions;
+    final accs = _database.dbAccounts;
+    final cats = _database.dbCategories;
+
+    final incomeFilter = cats.type.equals(CategoryType.income.dbValue);
+    final incomeSum = txs.amount.sum(filter: incomeFilter);
+    final expenseSum = txs.amount.sum(filter: incomeFilter.not());
+
+    final query = _database.selectOnly(txs).join([
+      innerJoin(accs, accs.id.equalsExp(txs.accountId)),
+      innerJoin(cats, cats.id.equalsExp(txs.categoryId)),
+    ]);
+    query.addColumns([accs.currencyCode, incomeSum, expenseSum]);
+    _applyFilters(query, filters);
+    query.groupBy([accs.currencyCode]);
+
+    final rows = await query.get();
+    return {
+      for (final row in rows)
+        row.read(accs.currencyCode)!:
+            (row.read(incomeSum) ?? 0) - (row.read(expenseSum) ?? 0),
+    };
+  }
+
   Future<int> getAccountBalance(String accountId) async {
     final result = await _database.customSelect(
       '''
@@ -123,20 +151,7 @@ class TransactionRepository {
       innerJoin(cats, cats.id.equalsExp(txs.categoryId)),
     ]);
 
-    query.where(txs.isDeleted.equals(false));
-
-    if (filters.accountIds?.isNotEmpty == true) {
-      query.where(txs.accountId.isIn(filters.accountIds!));
-    }
-    if (filters.categoryIds?.isNotEmpty == true) {
-      query.where(txs.categoryId.isIn(filters.categoryIds!));
-    }
-    if (filters.from != null) {
-      query.where(txs.date.isBiggerOrEqualValue(filters.from!));
-    }
-    if (filters.to != null) {
-      query.where(txs.date.isSmallerOrEqualValue(filters.to!));
-    }
+    _applyFilters(query, filters);
 
     final orderingMode = filters.direction == SortDirection.asc
         ? OrderingMode.asc
@@ -163,5 +178,27 @@ class TransactionRepository {
           ),
         )
         .toList();
+  }
+
+  void _applyFilters(
+    JoinedSelectStatement<HasResultSet, dynamic> query,
+    TransactionFilters filters,
+  ) {
+    final txs = _database.dbTransactions;
+
+    query.where(txs.isDeleted.equals(false));
+
+    if (filters.accountIds?.isNotEmpty == true) {
+      query.where(txs.accountId.isIn(filters.accountIds!));
+    }
+    if (filters.categoryIds?.isNotEmpty == true) {
+      query.where(txs.categoryId.isIn(filters.categoryIds!));
+    }
+    if (filters.from != null) {
+      query.where(txs.date.isBiggerOrEqualValue(filters.from!));
+    }
+    if (filters.to != null) {
+      query.where(txs.date.isSmallerOrEqualValue(filters.to!));
+    }
   }
 }

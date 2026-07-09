@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:aad/domain/models/account_details.dart';
 import 'package:aad/domain/providers/transactions/transaction_actions_provider.dart';
-import 'package:aad/screens/home/utils/currency_utils.dart';
+import 'package:aad/utils/currency_utils.dart';
 import 'package:aad/widgets/amount_editor.dart';
 import 'package:aad/widgets/number_pad.dart';
 

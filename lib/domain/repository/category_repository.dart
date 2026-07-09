@@ -3,6 +3,7 @@ import 'package:uuid/uuid.dart';
 
 import 'package:aad/db/database.dart';
 import 'package:aad/domain/models/category.dart';
+import 'package:aad/utils/db_constants.dart';
 
 class CategoryRepository {
   CategoryRepository(this._database);
@@ -31,6 +32,19 @@ class CategoryRepository {
 
     final rows = await query.get();
     return rows.map(Category.fromDB).toList();
+  }
+
+  Future<Category> getAccountBalanceCategory(CategoryType type) async {
+    final row =
+        await (_database.select(_database.dbCategories)..where(
+              (category) =>
+                  category.isSystem.equals(true) &
+                  category.name.equals(kAccountBalanceCategoryName) &
+                  category.type.equals(type.dbValue) &
+                  category.isDeleted.equals(false),
+            ))
+            .getSingle();
+    return Category.fromDB(row);
   }
 
   Future<String> createCategory({

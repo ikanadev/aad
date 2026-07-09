@@ -6,6 +6,7 @@ import 'package:aad/domain/models/account_details.dart';
 import 'package:aad/domain/providers/accounts/account_actions_provider.dart';
 import 'package:aad/domain/providers/accounts/accounts_provider.dart';
 import 'package:aad/screens/accounts/widgets/account_form.dart';
+import 'package:aad/screens/accounts/widgets/adjust_balance_sheet.dart';
 
 class EditAccountScreen extends ConsumerStatefulWidget {
   const EditAccountScreen({super.key, required this.accountId});
@@ -52,6 +53,8 @@ class _EditAccountScreenState extends ConsumerState<EditAccountScreen> {
             submitLabel: 'Save changes',
             onSubmit: (name, currencyCode, isDefault) =>
                 _save(name, isDefault),
+            onAdjustBalance: () =>
+                showAdjustBalanceSheet(context, account: account),
           );
         },
         error: (error, stackTrace) => Center(

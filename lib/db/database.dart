@@ -1,4 +1,5 @@
 import 'package:aad/domain/models/category.dart';
+import 'package:aad/utils/db_constants.dart';
 import 'package:drift/drift.dart';
 import 'package:drift_flutter/drift_flutter.dart';
 import 'package:uuid/uuid.dart';
@@ -22,10 +23,10 @@ class AppDatabase extends _$AppDatabase {
       onCreate: (m) async {
         await m.createAll();
         const id = Uuid();
-        final name = 'Account balance';
+        const name = kAccountBalanceCategoryName;
         for (final category in [
-          (type: CategoryType.income, color: '#16A34A', iconName: ''),
-          (type: CategoryType.expense, color: '#DC2626', iconName: ''),
+          (type: CategoryType.income, color: '#16A34A', iconName: 'positiveAdjustment'),
+          (type: CategoryType.expense, color: '#DC2626', iconName: 'negativeAdjustment'),
         ]) {
           final existing =
               await (select(dbCategories)..where(

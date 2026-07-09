@@ -7,6 +7,7 @@ import 'package:aad/domain/providers/accounts/accounts_provider.dart';
 import 'package:aad/domain/providers/categories/categories_provider.dart';
 import 'package:aad/domain/providers/transactions/transaction_actions_provider.dart';
 import 'package:aad/screens/home/utils/currency_utils.dart';
+import 'package:aad/widgets/amount_editor.dart';
 import 'package:aad/widgets/app_icon.dart';
 import 'package:aad/widgets/number_pad.dart';
 
@@ -41,11 +42,9 @@ class AddTransactionSheet extends ConsumerStatefulWidget {
 }
 
 class _AddTransactionSheetState extends ConsumerState<AddTransactionSheet> {
-  static const _maxIntegerDigits = 9;
-
   AccountDetails? _account;
   late Category _category;
-  String _amount = '0';
+  final AmountEditor _amount = AmountEditor();
   DateTime _date = DateTime.now();
   String? _error;
   bool _saving = false;
@@ -62,13 +61,6 @@ class _AddTransactionSheetState extends ConsumerState<AddTransactionSheet> {
     return _date.year == now.year &&
         _date.month == now.month &&
         _date.day == now.day;
-  }
-
-  int get _amountInCents {
-    final parts = _amount.split('.');
-    final integer = int.tryParse(parts[0]) ?? 0;
-    final decimals = parts.length > 1 ? parts[1].padRight(2, '0') : '00';
-    return integer * 100 + int.parse(decimals);
   }
 
   @override
@@ -110,7 +102,7 @@ class _AddTransactionSheetState extends ConsumerState<AddTransactionSheet> {
             ),
             const SizedBox(height: 24),
             Text(
-              '$currencySymbol$_amount',
+              '$currencySymbol${_amount.value}',
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.displayMedium,
             ),
@@ -148,34 +140,21 @@ class _AddTransactionSheetState extends ConsumerState<AddTransactionSheet> {
   void _onNumberPress(int number) {
     setState(() {
       _error = null;
-
-      final dotIndex = _amount.indexOf('.');
-      if (dotIndex == -1) {
-        if (_amount == '0') {
-          _amount = '$number';
-        } else if (_amount.length < _maxIntegerDigits) {
-          _amount += '$number';
-        }
-      } else if (_amount.length - dotIndex <= 2) {
-        _amount += '$number';
-      }
+      _amount.pressNumber(number);
     });
   }
 
   void _onDecimalPress() {
-    if (_amount.contains('.')) return;
     setState(() {
       _error = null;
-      _amount += '.';
+      _amount.pressDecimal();
     });
   }
 
   void _onRemove() {
     setState(() {
       _error = null;
-      _amount = _amount.length <= 1
-          ? '0'
-          : _amount.substring(0, _amount.length - 1);
+      _amount.remove();
     });
   }
 
@@ -239,12 +218,12 @@ class _AddTransactionSheetState extends ConsumerState<AddTransactionSheet> {
     final String? error;
     if (account == null) {
       error = 'Choose an account first';
-    } else if (_amount.endsWith('.')) {
+    } else if (_amount.isIncomplete) {
       error = 'The amount is incomplete';
-    } else if (_amountInCents == 0) {
+    } else if (_amount.cents == 0) {
       error = 'Enter an amount';
     } else if (_category.type == CategoryType.expense &&
-        _amountInCents > account.balance) {
+        _amount.cents > account.balance) {
       error = 'Not enough balance in ${account.name}';
     } else {
       error = null;
@@ -266,7 +245,7 @@ class _AddTransactionSheetState extends ConsumerState<AddTransactionSheet> {
           .createTransaction(
             accountId: account!.id,
             categoryId: _category.id,
-            amount: _amountInCents,
+            amount: _amount.cents,
             date: _date,
           );
 

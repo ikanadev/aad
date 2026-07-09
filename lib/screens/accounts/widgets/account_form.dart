@@ -9,12 +9,14 @@ class AccountForm extends StatefulWidget {
     this.account,
     required this.submitLabel,
     required this.onSubmit,
+    this.onAdjustBalance,
   });
 
   final Account? account;
   final String submitLabel;
   final Future<void> Function(String name, String currencyCode, bool isDefault)
   onSubmit;
+  final VoidCallback? onAdjustBalance;
 
   bool get isEditing => account != null;
 
@@ -135,6 +137,13 @@ class _AccountFormState extends State<AccountForm> {
                   )
                 : Text(widget.submitLabel),
           ),
+          if (widget.onAdjustBalance != null) ...[
+            const SizedBox(height: 12),
+            OutlinedButton(
+              onPressed: _saving ? null : widget.onAdjustBalance,
+              child: const Text('Adjust balance'),
+            ),
+          ],
         ],
       ),
     );

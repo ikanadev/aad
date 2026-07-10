@@ -3,7 +3,6 @@ import 'package:uuid/uuid.dart';
 
 import 'package:aad/db/database.dart';
 import 'package:aad/domain/models/account.dart';
-import 'package:aad/domain/models/account_details.dart';
 
 class AccountRepository {
   AccountRepository(this._database);
@@ -70,15 +69,28 @@ class AccountRepository {
   }
 
   Future<void> deleteAccount({required String id}) async {
-    await (_database.update(
-      _database.dbAccounts,
-    )..where((account) => account.id.equals(id))).write(
-      const DbAccountsCompanion(
-        isDeleted: Value(true),
-        isDefault: Value(false),
-        isDirty: Value(true),
-      ),
-    );
+    await _database.transaction(() async {
+      await (_database.update(
+        _database.dbAccounts,
+      )..where((account) => account.id.equals(id))).write(
+        const DbAccountsCompanion(
+          isDeleted: Value(true),
+          isDefault: Value(false),
+          isDirty: Value(true),
+        ),
+      );
+
+      // Cascade: an account's transactions go with it, so lists, totals and
+      // stats never show entries for an account that no longer exists.
+      await (_database.update(
+        _database.dbTransactions,
+      )..where((t) => t.accountId.equals(id))).write(
+        const DbTransactionsCompanion(
+          isDeleted: Value(true),
+          isDirty: Value(true),
+        ),
+      );
+    });
   }
 
   Future<void> _clearDefaultAccount() async {
@@ -87,34 +99,5 @@ class AccountRepository {
     )..where((account) => account.isDefault.equals(true))).write(
       const DbAccountsCompanion(isDefault: Value(false), isDirty: Value(true)),
     );
-  }
-
-  Future<List<AccountDetails>> listAccountsWithBalance() async {
-    final accounts = await listAccounts();
-
-    final rows = await _database.customSelect(
-      'SELECT t.account_id, '
-      'SUM(CASE WHEN c.type = \'income\' THEN t.amount ELSE 0 END) '
-      '- SUM(CASE WHEN c.type = \'expense\' THEN t.amount ELSE 0 END) AS balance '
-      'FROM db_transactions t '
-      'JOIN db_categories c ON t.category_id = c.id '
-      'WHERE t.is_deleted = 0 '
-      'GROUP BY t.account_id',
-      readsFrom: {_database.dbTransactions, _database.dbCategories},
-    ).get();
-
-    final balanceMap = {
-      for (final row in rows)
-        row.read<String>('account_id'): row.read<int>('balance'),
-    };
-
-    return accounts
-        .map(
-          (account) => AccountDetails.fromAccount(
-            account,
-            balance: balanceMap[account.id] ?? 0,
-          ),
-        )
-        .toList();
   }
 }

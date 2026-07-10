@@ -1,4 +1,8 @@
 import 'package:aad/domain/providers/accounts/accounts_provider.dart';
+import 'package:aad/domain/providers/stats/year_stats_provider.dart';
+import 'package:aad/domain/providers/transactions/currency_totals_provider.dart';
+import 'package:aad/domain/providers/transactions/today_transactions_provider.dart';
+import 'package:aad/domain/providers/transactions/transactions_provider.dart';
 import 'package:aad/domain/repository/account_repository_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -38,5 +42,10 @@ class AccountActions extends _$AccountActions {
   Future<void> deleteAccount({required String id}) async {
     await ref.read(accountRepositoryProvider).deleteAccount(id: id);
     ref.invalidate(accountsProvider);
+    // Deleting an account cascades to its transactions.
+    ref.invalidate(transactionsListProvider);
+    ref.invalidate(todayTransactionsProvider);
+    ref.invalidate(currencyTotalsProvider);
+    ref.invalidate(yearStatsProvider);
   }
 }

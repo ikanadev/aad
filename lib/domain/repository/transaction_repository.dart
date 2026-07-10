@@ -101,24 +101,23 @@ class TransactionRepository {
     final txs = _database.dbTransactions;
     final accs = _database.dbAccounts;
     final cats = _database.dbCategories;
-
-    final incomeFilter = cats.type.equals(CategoryType.income.dbValue);
-    final incomeSum = txs.amount.sum(filter: incomeFilter);
-    final expenseSum = txs.amount.sum(filter: incomeFilter.not());
+    final sums = _signedSums();
 
     final query = _database.selectOnly(txs).join([
       innerJoin(accs, accs.id.equalsExp(txs.accountId)),
       innerJoin(cats, cats.id.equalsExp(txs.categoryId)),
     ]);
-    query.addColumns([accs.currencyCode, incomeSum, expenseSum]);
+    query.addColumns([accs.currencyCode, sums.income, sums.expense]);
     _applyFilters(query, filters);
+    // Balance adjustments are bookkeeping, not human income or spending.
+    query.where(cats.isSystem.equals(false));
     query.groupBy([accs.currencyCode]);
 
     final rows = await query.get();
     return {
       for (final row in rows)
         row.read(accs.currencyCode)!:
-            (row.read(incomeSum) ?? 0) - (row.read(expenseSum) ?? 0),
+            (row.read(sums.income) ?? 0) - (row.read(sums.expense) ?? 0),
     };
   }
 
@@ -178,21 +177,43 @@ class TransactionRepository {
     );
   }
 
-  Future<int> getAccountBalance(String accountId) async {
-    final result = await _database.customSelect(
-      '''
-      SELECT COALESCE(SUM(
-        CASE WHEN c.type = 'income' THEN t.amount ELSE -t.amount END
-      ), 0) AS balance
-      FROM db_transactions t
-      INNER JOIN db_categories c ON c.id = t.category_id
-      WHERE t.account_id = ? AND t.is_deleted = 0
-      ''',
-      variables: [Variable.withString(accountId)],
-      readsFrom: {_database.dbTransactions, _database.dbCategories},
-    ).getSingle();
+  /// Balance per account over all non-deleted transactions, including system
+  /// balance adjustments. Accounts without transactions are absent.
+  Future<Map<String, int>> getBalancesByAccount() async {
+    final txs = _database.dbTransactions;
+    final cats = _database.dbCategories;
+    final sums = _signedSums();
 
-    return result.read<int>('balance');
+    final query = _database.selectOnly(txs).join([
+      innerJoin(cats, cats.id.equalsExp(txs.categoryId)),
+    ]);
+    query.addColumns([txs.accountId, sums.income, sums.expense]);
+    query.where(txs.isDeleted.equals(false));
+    query.groupBy([txs.accountId]);
+
+    final rows = await query.get();
+    return {
+      for (final row in rows)
+        row.read(txs.accountId)!:
+            (row.read(sums.income) ?? 0) - (row.read(sums.expense) ?? 0),
+    };
+  }
+
+  Future<int> getAccountBalance(String accountId) async {
+    final balances = await getBalancesByAccount();
+    return balances[accountId] ?? 0;
+  }
+
+  /// The one place that encodes "income adds, expense subtracts". Both sums
+  /// require the dbCategories join to be present on the query.
+  ({Expression<int> income, Expression<int> expense}) _signedSums() {
+    final incomeFilter = _database.dbCategories.type.equals(
+      CategoryType.income.dbValue,
+    );
+    return (
+      income: _database.dbTransactions.amount.sum(filter: incomeFilter),
+      expense: _database.dbTransactions.amount.sum(filter: incomeFilter.not()),
+    );
   }
 
   Future<List<TransactionDetails>> _queryTransactions({

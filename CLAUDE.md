@@ -21,9 +21,6 @@ dart run build_runner watch --delete-conflicting-outputs
 # Lint
 flutter analyze
 
-# Tests
-flutter test
-
 # Compile SVG icons to .vec assets (run after adding/changing icons in design/icons/)
 bash tool/build_icons.sh
 ```
@@ -34,6 +31,12 @@ The app is in active development and is assumed to run for the first time on a f
 device every time. Do **not** write Drift schema migrations or bump `schemaVersion` when
 changing tables — just change the table definition, regenerate, and reinstall. There is no
 production data to preserve yet.
+
+## Development phase: no tests
+
+Do **not** write tests while the app is in this early phase — behavior is still changing
+too fast for them to pay off. There is no `test/` directory; don't create one unless
+explicitly asked.
 
 ## Architecture
 

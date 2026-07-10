@@ -313,14 +313,14 @@ class _CategoryAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = category.flutterColor;
+    final color = category.appColor;
     final icon = AppIcons.tryParse(category.iconName);
 
     return CircleAvatar(
       radius: radius,
-      backgroundColor: color.withValues(alpha: 0.14),
+      backgroundColor: color.container,
       child: icon == null
-          ? Icon(Icons.category_outlined, color: color, size: radius)
+          ? Icon(Icons.category_outlined, color: color.fill, size: radius)
           : AppIcon(icon: icon, size: radius * 1.4),
     );
   }

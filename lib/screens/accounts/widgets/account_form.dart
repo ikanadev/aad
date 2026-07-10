@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 import 'package:aad/domain/models/account.dart';
+import 'package:aad/domain/models/app_color.dart';
 import 'package:aad/utils/currency_utils.dart';
+import 'package:aad/widgets/color_picker.dart';
 
 class AccountForm extends StatefulWidget {
   const AccountForm({
@@ -14,7 +16,12 @@ class AccountForm extends StatefulWidget {
 
   final Account? account;
   final String submitLabel;
-  final Future<void> Function(String name, String currencyCode, bool isDefault)
+  final Future<void> Function(
+    String name,
+    String currencyCode,
+    String color,
+    bool isDefault,
+  )
   onSubmit;
   final VoidCallback? onAdjustBalance;
 
@@ -28,6 +35,7 @@ class _AccountFormState extends State<AccountForm> {
   final _formKey = GlobalKey<FormState>();
   late final TextEditingController _nameController;
   late String _currencyCode;
+  late String _color;
   late bool _isDefault;
   bool _saving = false;
   String? _error;
@@ -42,6 +50,7 @@ class _AccountFormState extends State<AccountForm> {
     _nameController = TextEditingController(text: widget.account?.name ?? '');
     _currencyCode =
         widget.account?.currencyCode ?? supportedCurrencies.first.code;
+    _color = widget.account?.color ?? 'blue';
     _isDefault = widget.account?.isDefault ?? false;
   }
 
@@ -113,6 +122,19 @@ class _AccountFormState extends State<AccountForm> {
               },
             ),
           const SizedBox(height: 16),
+          SwatchPickerField(
+            label: 'Color',
+            onTap: _pickColor,
+            child: Container(
+              width: 28,
+              height: 28,
+              decoration: BoxDecoration(
+                color: AppColor.byName(_color).fill,
+                borderRadius: BorderRadius.circular(6),
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
           SwitchListTile(
             title: const Text('Default account'),
             subtitle: Text(
@@ -161,6 +183,7 @@ class _AccountFormState extends State<AccountForm> {
       await widget.onSubmit(
         _nameController.text.trim(),
         _currencyCode,
+        _color,
         _isDefault,
       );
     } catch (error) {
@@ -168,5 +191,10 @@ class _AccountFormState extends State<AccountForm> {
     } finally {
       if (mounted) setState(() => _saving = false);
     }
+  }
+
+  Future<void> _pickColor() async {
+    final selected = await showAppColorPicker(context, selectedName: _color);
+    if (selected != null) setState(() => _color = selected.name);
   }
 }

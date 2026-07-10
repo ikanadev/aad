@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:aad/domain/models/app_color.dart';
 import 'package:aad/utils/currency_utils.dart';
 
 class TotalBadge extends StatelessWidget {
@@ -11,20 +12,20 @@ class TotalBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final currency = currencyInfoByCode(currencyCode);
-    final color = total < 0 ? Colors.red.shade600 : Colors.green.shade600;
+    final color = total < 0 ? expenseColor : incomeColor;
     final totalFormatted = (total / 100).toStringAsFixed(2);
     final sign = total > 0 ? '+' : '';
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.12),
+        color: color.container,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Text(
         '$sign$totalFormatted ${currency.symbol} ${currency.code}',
         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-          color: color,
+          color: color.text,
           fontWeight: FontWeight.w600,
         ),
       ),

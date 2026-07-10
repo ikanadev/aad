@@ -7,6 +7,9 @@ class DbAccounts extends Table {
 
   late final currencyCode = text()();
 
+  /// AppColor name, e.g. 'blue' — see domain/models/app_color.dart.
+  late final color = text().withDefault(const Constant('blue'))();
+
   late final isDefault = boolean().withDefault(const Constant(false))();
 
   late final serverVersion = real().withDefault(const Constant(0))();

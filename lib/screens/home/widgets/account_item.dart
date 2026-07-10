@@ -14,9 +14,15 @@ class AccountItem extends StatelessWidget {
     final currency = currencyInfoByCode(account.currencyCode);
     final balanceFormatted = (account.balance / 100).toStringAsFixed(2);
 
+    final color = account.appColor;
+
     return Card(
       child: ListTile(
         onTap: onTap,
+        leading: CircleAvatar(
+          backgroundColor: color.container,
+          child: Icon(Icons.account_balance_wallet_outlined, color: color.fill),
+        ),
         title: Row(
           children: [
             Flexible(child: Text(account.name)),

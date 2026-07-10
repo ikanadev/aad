@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:aad/domain/models/app_color.dart';
 import 'package:aad/domain/models/category.dart';
 import 'package:aad/domain/models/transaction_details.dart';
 import 'package:aad/utils/currency_utils.dart';
@@ -14,7 +15,7 @@ class TransactionItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final category = transaction.category;
-    final color = category.flutterColor;
+    final color = category.appColor;
     final icon = AppIcons.tryParse(category.iconName);
     final currency = currencyInfoByCode(transaction.account.currencyCode);
     final isIncome = category.type == CategoryType.income;
@@ -25,9 +26,9 @@ class TransactionItem extends StatelessWidget {
       child: ListTile(
         onTap: onTap,
         leading: CircleAvatar(
-          backgroundColor: color.withValues(alpha: 0.14),
+          backgroundColor: color.container,
           child: icon == null
-              ? Icon(Icons.category_outlined, color: color)
+              ? Icon(Icons.category_outlined, color: color.fill)
               : AppIcon(icon: icon, size: 22),
         ),
         title: Text(category.name),
@@ -41,7 +42,7 @@ class TransactionItem extends StatelessWidget {
         trailing: Text(
           '$sign$amountFormatted ${currency.symbol}',
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            color: isIncome ? Colors.green.shade600 : null,
+            color: isIncome ? incomeColor.text : null,
             fontWeight: FontWeight.w600,
           ),
         ),

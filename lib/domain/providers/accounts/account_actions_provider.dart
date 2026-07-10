@@ -16,6 +16,7 @@ class AccountActions extends _$AccountActions {
   Future<void> createAccount({
     required String name,
     required String currencyCode,
+    required String color,
     required bool isDefault,
   }) async {
     await ref
@@ -23,6 +24,7 @@ class AccountActions extends _$AccountActions {
         .createAccount(
           name: name,
           currencyCode: currencyCode,
+          color: color,
           isDefault: isDefault,
         );
     ref.invalidate(accountsProvider);
@@ -31,11 +33,12 @@ class AccountActions extends _$AccountActions {
   Future<void> editAccount({
     required String id,
     required String name,
+    required String color,
     required bool isDefault,
   }) async {
     await ref
         .read(accountRepositoryProvider)
-        .editAccount(id: id, name: name, isDefault: isDefault);
+        .editAccount(id: id, name: name, color: color, isDefault: isDefault);
     ref.invalidate(accountsProvider);
   }
 

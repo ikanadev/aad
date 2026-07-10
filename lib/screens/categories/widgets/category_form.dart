@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
+import 'package:aad/domain/models/app_color.dart';
 import 'package:aad/domain/models/category.dart';
-import 'package:aad/domain/models/category_color.dart';
 import 'package:aad/widgets/app_icon.dart';
+import 'package:aad/widgets/color_picker.dart';
 
 class CategoryForm extends StatefulWidget {
   const CategoryForm({
@@ -45,7 +46,7 @@ class _CategoryFormState extends State<CategoryForm> {
         AppIcons.tryParse(widget.category?.iconName ?? '') ??
         AppIcons.values.first;
     _type = widget.category?.type ?? CategoryType.expense;
-    _color = widget.category?.color ?? categoryColors.first.value;
+    _color = widget.category?.color ?? appColors.first.name;
   }
 
   @override
@@ -86,20 +87,20 @@ class _CategoryFormState extends State<CategoryForm> {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _SwatchPickerField(
+              SwatchPickerField(
                 label: 'Icon',
                 onTap: _pickIcon,
                 child: AppIcon(icon: _icon, size: 28),
               ),
               const SizedBox(width: 16),
-              _SwatchPickerField(
+              SwatchPickerField(
                 label: 'Color',
                 onTap: _pickColor,
                 child: Container(
                   width: 28,
                   height: 28,
                   decoration: BoxDecoration(
-                    color: categoryColorFromString(_color),
+                    color: AppColor.byName(_color).fill,
                     borderRadius: BorderRadius.circular(6),
                   ),
                 ),
@@ -193,55 +194,8 @@ class _CategoryFormState extends State<CategoryForm> {
   }
 
   Future<void> _pickColor() async {
-    final selected = await showDialog<String>(
-      context: context,
-      builder: (context) => SimpleDialog(
-        title: const Text('Choose a color'),
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Wrap(
-              spacing: 12,
-              runSpacing: 12,
-              children: [
-                for (final color in categoryColors)
-                  Tooltip(
-                    message: color.name,
-                    child: InkWell(
-                      borderRadius: BorderRadius.circular(18),
-                      onTap: () => Navigator.of(context).pop(color.value),
-                      child: Container(
-                        width: 36,
-                        height: 36,
-                        decoration: BoxDecoration(
-                          color: color.flutterColor,
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: _color == color.value
-                                ? Theme.of(context).colorScheme.onSurface
-                                : Colors.transparent,
-                            width: 3,
-                          ),
-                        ),
-                        child: _color == color.value
-                            ? const Icon(
-                                Icons.check,
-                                color: Colors.white,
-                                size: 18,
-                              )
-                            : null,
-                      ),
-                    ),
-                  ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 12),
-        ],
-      ),
-    );
-
-    if (selected != null) setState(() => _color = selected);
+    final selected = await showAppColorPicker(context, selectedName: _color);
+    if (selected != null) setState(() => _color = selected.name);
   }
 
   Future<void> _submit() async {
@@ -264,43 +218,5 @@ class _CategoryFormState extends State<CategoryForm> {
     } finally {
       if (mounted) setState(() => _saving = false);
     }
-  }
-}
-
-class _SwatchPickerField extends StatelessWidget {
-  const _SwatchPickerField({
-    required this.label,
-    required this.onTap,
-    required this.child,
-  });
-
-  final String label;
-  final VoidCallback onTap;
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(label, style: Theme.of(context).textTheme.labelMedium),
-        const SizedBox(height: 6),
-        InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(8),
-          child: Container(
-            width: 56,
-            height: 56,
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: Theme.of(context).colorScheme.outline,
-              ),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Center(child: child),
-          ),
-        ),
-      ],
-    );
   }
 }

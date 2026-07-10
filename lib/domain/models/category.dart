@@ -1,8 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:drift/drift.dart';
 
 import 'package:aad/db/database.dart';
-import 'package:aad/domain/models/category_color.dart';
+import 'package:aad/domain/models/app_color.dart';
 
 enum CategoryType {
   income,
@@ -42,7 +41,7 @@ class Category {
     required this.isSystem,
   });
 
-  Color get flutterColor => categoryColorFromString(color);
+  AppColor get appColor => AppColor.byName(color);
 
   factory Category.fromDB(DbCategory row) {
     return Category(

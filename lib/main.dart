@@ -1,3 +1,4 @@
+import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -12,13 +13,22 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      title: 'AAD',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+    // Dark-only by design; the AppColor palette is validated for dark surfaces.
+    // Wallpaper-derived scheme on Android 12+, seeded fallback elsewhere.
+    return DynamicColorBuilder(
+      builder: (lightDynamic, darkDynamic) => MaterialApp.router(
+        title: 'AAD',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          colorScheme:
+              darkDynamic ??
+              ColorScheme.fromSeed(
+                seedColor: Colors.deepPurple,
+                brightness: Brightness.dark,
+              ),
+        ),
+        routerConfig: router,
       ),
-      routerConfig: router,
     );
   }
 }

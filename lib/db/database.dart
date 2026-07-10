@@ -26,8 +26,8 @@ class AppDatabase extends _$AppDatabase {
         const id = Uuid();
         const name = kAccountBalanceCategoryName;
         for (final category in [
-          (type: CategoryType.income, color: '#16A34A', iconName: 'positiveAdjustment'),
-          (type: CategoryType.expense, color: '#DC2626', iconName: 'negativeAdjustment'),
+          (type: CategoryType.income, color: 'emerald', iconName: 'positiveAdjustment'),
+          (type: CategoryType.expense, color: 'rose', iconName: 'negativeAdjustment'),
         ]) {
           final existing =
               await (select(dbCategories)..where(

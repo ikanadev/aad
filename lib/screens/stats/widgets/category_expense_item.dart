@@ -22,7 +22,7 @@ class CategoryExpenseItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final category = stat.category;
-    final color = category.flutterColor;
+    final color = category.appColor;
     final icon = AppIcons.tryParse(category.iconName);
 
     final visible = [
@@ -36,9 +36,9 @@ class CategoryExpenseItem extends StatelessWidget {
         children: [
           CircleAvatar(
             radius: 20,
-            backgroundColor: color.withValues(alpha: 0.14),
+            backgroundColor: color.container,
             child: icon == null
-                ? Icon(Icons.category_outlined, color: color, size: 20)
+                ? Icon(Icons.category_outlined, color: color.fill, size: 20)
                 : AppIcon(icon: icon, size: 20),
           ),
           const SizedBox(width: 10),

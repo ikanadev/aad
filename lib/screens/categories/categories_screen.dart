@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:aad/domain/models/app_color.dart';
 import 'package:aad/domain/models/category.dart';
 import 'package:aad/domain/providers/accounts/default_account_provider.dart';
 import 'package:aad/domain/providers/categories/categories_provider.dart';
@@ -52,7 +53,7 @@ class _CategoriesScreenState extends ConsumerState<CategoriesScreen>
             Tab(text: 'Expenses', icon: Icon(Icons.arrow_downward)),
             Tab(text: 'Incomes', icon: Icon(Icons.arrow_upward)),
           ],
-          indicatorColor: Colors.red.shade600,
+          indicatorColor: expenseColor.fill,
           labelColor: Theme.of(context).colorScheme.onSurface,
         ),
       ),
@@ -62,7 +63,7 @@ class _CategoriesScreenState extends ConsumerState<CategoriesScreen>
           children: [
             CategoryGrid(
               type: CategoryType.expense,
-              accentColor: Colors.red.shade600,
+              accentColor: expenseColor.fill,
               categories: categories
                   .where((category) => category.type == CategoryType.expense)
                   .toList(),
@@ -76,7 +77,7 @@ class _CategoriesScreenState extends ConsumerState<CategoriesScreen>
             ),
             CategoryGrid(
               type: CategoryType.income,
-              accentColor: Colors.green.shade600,
+              accentColor: incomeColor.fill,
               categories: categories
                   .where((category) => category.type == CategoryType.income)
                   .toList(),

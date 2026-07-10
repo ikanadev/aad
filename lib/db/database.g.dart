@@ -38,6 +38,16 @@ class $DbAccountsTable extends DbAccounts
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _colorMeta = const VerificationMeta('color');
+  @override
+  late final GeneratedColumn<String> color = GeneratedColumn<String>(
+    'color',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('blue'),
+  );
   static const VerificationMeta _isDefaultMeta = const VerificationMeta(
     'isDefault',
   );
@@ -100,6 +110,7 @@ class $DbAccountsTable extends DbAccounts
     id,
     name,
     currencyCode,
+    color,
     isDefault,
     serverVersion,
     isDirty,
@@ -140,6 +151,12 @@ class $DbAccountsTable extends DbAccounts
       );
     } else if (isInserting) {
       context.missing(_currencyCodeMeta);
+    }
+    if (data.containsKey('color')) {
+      context.handle(
+        _colorMeta,
+        color.isAcceptableOrUnknown(data['color']!, _colorMeta),
+      );
     }
     if (data.containsKey('is_default')) {
       context.handle(
@@ -189,6 +206,10 @@ class $DbAccountsTable extends DbAccounts
         DriftSqlType.string,
         data['${effectivePrefix}currency_code'],
       )!,
+      color: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}color'],
+      )!,
       isDefault: attachedDatabase.typeMapping.read(
         DriftSqlType.bool,
         data['${effectivePrefix}is_default'],
@@ -218,6 +239,9 @@ class DbAccount extends DataClass implements Insertable<DbAccount> {
   final String id;
   final String name;
   final String currencyCode;
+
+  /// AppColor name, e.g. 'blue' — see domain/models/app_color.dart.
+  final String color;
   final bool isDefault;
   final double serverVersion;
   final bool isDirty;
@@ -226,6 +250,7 @@ class DbAccount extends DataClass implements Insertable<DbAccount> {
     required this.id,
     required this.name,
     required this.currencyCode,
+    required this.color,
     required this.isDefault,
     required this.serverVersion,
     required this.isDirty,
@@ -237,6 +262,7 @@ class DbAccount extends DataClass implements Insertable<DbAccount> {
     map['id'] = Variable<String>(id);
     map['name'] = Variable<String>(name);
     map['currency_code'] = Variable<String>(currencyCode);
+    map['color'] = Variable<String>(color);
     map['is_default'] = Variable<bool>(isDefault);
     map['server_version'] = Variable<double>(serverVersion);
     map['is_dirty'] = Variable<bool>(isDirty);
@@ -249,6 +275,7 @@ class DbAccount extends DataClass implements Insertable<DbAccount> {
       id: Value(id),
       name: Value(name),
       currencyCode: Value(currencyCode),
+      color: Value(color),
       isDefault: Value(isDefault),
       serverVersion: Value(serverVersion),
       isDirty: Value(isDirty),
@@ -265,6 +292,7 @@ class DbAccount extends DataClass implements Insertable<DbAccount> {
       id: serializer.fromJson<String>(json['id']),
       name: serializer.fromJson<String>(json['name']),
       currencyCode: serializer.fromJson<String>(json['currencyCode']),
+      color: serializer.fromJson<String>(json['color']),
       isDefault: serializer.fromJson<bool>(json['isDefault']),
       serverVersion: serializer.fromJson<double>(json['serverVersion']),
       isDirty: serializer.fromJson<bool>(json['isDirty']),
@@ -278,6 +306,7 @@ class DbAccount extends DataClass implements Insertable<DbAccount> {
       'id': serializer.toJson<String>(id),
       'name': serializer.toJson<String>(name),
       'currencyCode': serializer.toJson<String>(currencyCode),
+      'color': serializer.toJson<String>(color),
       'isDefault': serializer.toJson<bool>(isDefault),
       'serverVersion': serializer.toJson<double>(serverVersion),
       'isDirty': serializer.toJson<bool>(isDirty),
@@ -289,6 +318,7 @@ class DbAccount extends DataClass implements Insertable<DbAccount> {
     String? id,
     String? name,
     String? currencyCode,
+    String? color,
     bool? isDefault,
     double? serverVersion,
     bool? isDirty,
@@ -297,6 +327,7 @@ class DbAccount extends DataClass implements Insertable<DbAccount> {
     id: id ?? this.id,
     name: name ?? this.name,
     currencyCode: currencyCode ?? this.currencyCode,
+    color: color ?? this.color,
     isDefault: isDefault ?? this.isDefault,
     serverVersion: serverVersion ?? this.serverVersion,
     isDirty: isDirty ?? this.isDirty,
@@ -309,6 +340,7 @@ class DbAccount extends DataClass implements Insertable<DbAccount> {
       currencyCode: data.currencyCode.present
           ? data.currencyCode.value
           : this.currencyCode,
+      color: data.color.present ? data.color.value : this.color,
       isDefault: data.isDefault.present ? data.isDefault.value : this.isDefault,
       serverVersion: data.serverVersion.present
           ? data.serverVersion.value
@@ -324,6 +356,7 @@ class DbAccount extends DataClass implements Insertable<DbAccount> {
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('currencyCode: $currencyCode, ')
+          ..write('color: $color, ')
           ..write('isDefault: $isDefault, ')
           ..write('serverVersion: $serverVersion, ')
           ..write('isDirty: $isDirty, ')
@@ -337,6 +370,7 @@ class DbAccount extends DataClass implements Insertable<DbAccount> {
     id,
     name,
     currencyCode,
+    color,
     isDefault,
     serverVersion,
     isDirty,
@@ -349,6 +383,7 @@ class DbAccount extends DataClass implements Insertable<DbAccount> {
           other.id == this.id &&
           other.name == this.name &&
           other.currencyCode == this.currencyCode &&
+          other.color == this.color &&
           other.isDefault == this.isDefault &&
           other.serverVersion == this.serverVersion &&
           other.isDirty == this.isDirty &&
@@ -359,6 +394,7 @@ class DbAccountsCompanion extends UpdateCompanion<DbAccount> {
   final Value<String> id;
   final Value<String> name;
   final Value<String> currencyCode;
+  final Value<String> color;
   final Value<bool> isDefault;
   final Value<double> serverVersion;
   final Value<bool> isDirty;
@@ -368,6 +404,7 @@ class DbAccountsCompanion extends UpdateCompanion<DbAccount> {
     this.id = const Value.absent(),
     this.name = const Value.absent(),
     this.currencyCode = const Value.absent(),
+    this.color = const Value.absent(),
     this.isDefault = const Value.absent(),
     this.serverVersion = const Value.absent(),
     this.isDirty = const Value.absent(),
@@ -378,6 +415,7 @@ class DbAccountsCompanion extends UpdateCompanion<DbAccount> {
     required String id,
     required String name,
     required String currencyCode,
+    this.color = const Value.absent(),
     this.isDefault = const Value.absent(),
     this.serverVersion = const Value.absent(),
     this.isDirty = const Value.absent(),
@@ -390,6 +428,7 @@ class DbAccountsCompanion extends UpdateCompanion<DbAccount> {
     Expression<String>? id,
     Expression<String>? name,
     Expression<String>? currencyCode,
+    Expression<String>? color,
     Expression<bool>? isDefault,
     Expression<double>? serverVersion,
     Expression<bool>? isDirty,
@@ -400,6 +439,7 @@ class DbAccountsCompanion extends UpdateCompanion<DbAccount> {
       if (id != null) 'id': id,
       if (name != null) 'name': name,
       if (currencyCode != null) 'currency_code': currencyCode,
+      if (color != null) 'color': color,
       if (isDefault != null) 'is_default': isDefault,
       if (serverVersion != null) 'server_version': serverVersion,
       if (isDirty != null) 'is_dirty': isDirty,
@@ -412,6 +452,7 @@ class DbAccountsCompanion extends UpdateCompanion<DbAccount> {
     Value<String>? id,
     Value<String>? name,
     Value<String>? currencyCode,
+    Value<String>? color,
     Value<bool>? isDefault,
     Value<double>? serverVersion,
     Value<bool>? isDirty,
@@ -422,6 +463,7 @@ class DbAccountsCompanion extends UpdateCompanion<DbAccount> {
       id: id ?? this.id,
       name: name ?? this.name,
       currencyCode: currencyCode ?? this.currencyCode,
+      color: color ?? this.color,
       isDefault: isDefault ?? this.isDefault,
       serverVersion: serverVersion ?? this.serverVersion,
       isDirty: isDirty ?? this.isDirty,
@@ -441,6 +483,9 @@ class DbAccountsCompanion extends UpdateCompanion<DbAccount> {
     }
     if (currencyCode.present) {
       map['currency_code'] = Variable<String>(currencyCode.value);
+    }
+    if (color.present) {
+      map['color'] = Variable<String>(color.value);
     }
     if (isDefault.present) {
       map['is_default'] = Variable<bool>(isDefault.value);
@@ -466,6 +511,7 @@ class DbAccountsCompanion extends UpdateCompanion<DbAccount> {
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('currencyCode: $currencyCode, ')
+          ..write('color: $color, ')
           ..write('isDefault: $isDefault, ')
           ..write('serverVersion: $serverVersion, ')
           ..write('isDirty: $isDirty, ')
@@ -1683,6 +1729,7 @@ typedef $$DbAccountsTableCreateCompanionBuilder =
       required String id,
       required String name,
       required String currencyCode,
+      Value<String> color,
       Value<bool> isDefault,
       Value<double> serverVersion,
       Value<bool> isDirty,
@@ -1694,6 +1741,7 @@ typedef $$DbAccountsTableUpdateCompanionBuilder =
       Value<String> id,
       Value<String> name,
       Value<String> currencyCode,
+      Value<String> color,
       Value<bool> isDefault,
       Value<double> serverVersion,
       Value<bool> isDirty,
@@ -1722,6 +1770,11 @@ class $$DbAccountsTableFilterComposer
 
   ColumnFilters<String> get currencyCode => $composableBuilder(
     column: $table.currencyCode,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get color => $composableBuilder(
+    column: $table.color,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -1770,6 +1823,11 @@ class $$DbAccountsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get color => $composableBuilder(
+    column: $table.color,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<bool> get isDefault => $composableBuilder(
     column: $table.isDefault,
     builder: (column) => ColumnOrderings(column),
@@ -1810,6 +1868,9 @@ class $$DbAccountsTableAnnotationComposer
     column: $table.currencyCode,
     builder: (column) => column,
   );
+
+  GeneratedColumn<String> get color =>
+      $composableBuilder(column: $table.color, builder: (column) => column);
 
   GeneratedColumn<bool> get isDefault =>
       $composableBuilder(column: $table.isDefault, builder: (column) => column);
@@ -1860,6 +1921,7 @@ class $$DbAccountsTableTableManager
                 Value<String> id = const Value.absent(),
                 Value<String> name = const Value.absent(),
                 Value<String> currencyCode = const Value.absent(),
+                Value<String> color = const Value.absent(),
                 Value<bool> isDefault = const Value.absent(),
                 Value<double> serverVersion = const Value.absent(),
                 Value<bool> isDirty = const Value.absent(),
@@ -1869,6 +1931,7 @@ class $$DbAccountsTableTableManager
                 id: id,
                 name: name,
                 currencyCode: currencyCode,
+                color: color,
                 isDefault: isDefault,
                 serverVersion: serverVersion,
                 isDirty: isDirty,
@@ -1880,6 +1943,7 @@ class $$DbAccountsTableTableManager
                 required String id,
                 required String name,
                 required String currencyCode,
+                Value<String> color = const Value.absent(),
                 Value<bool> isDefault = const Value.absent(),
                 Value<double> serverVersion = const Value.absent(),
                 Value<bool> isDirty = const Value.absent(),
@@ -1889,6 +1953,7 @@ class $$DbAccountsTableTableManager
                 id: id,
                 name: name,
                 currencyCode: currencyCode,
+                color: color,
                 isDefault: isDefault,
                 serverVersion: serverVersion,
                 isDirty: isDirty,

@@ -17,7 +17,7 @@ class CategoryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = category.flutterColor;
+    final color = category.appColor;
     final icon = AppIcons.tryParse(category.iconName);
     return Card(
       clipBehavior: Clip.antiAlias,
@@ -31,9 +31,9 @@ class CategoryCard extends StatelessWidget {
             children: [
               CircleAvatar(
                 radius: 26,
-                backgroundColor: color.withValues(alpha: 0.14),
+                backgroundColor: color.container,
                 child: icon == null
-                    ? Icon(Icons.category_outlined, color: color)
+                    ? Icon(Icons.category_outlined, color: color.fill)
                     : AppIcon(icon: icon, size: 26),
               ),
               const SizedBox(height: 10),

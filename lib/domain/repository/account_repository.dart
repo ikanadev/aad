@@ -13,6 +13,7 @@ class AccountRepository {
   Future<String> createAccount({
     required String name,
     required String currencyCode,
+    required String color,
     required bool isDefault,
   }) async {
     final id = _uuid.v4();
@@ -27,6 +28,7 @@ class AccountRepository {
               id: id,
               name: name.trim(),
               currencyCode: currencyCode.trim().toUpperCase(),
+              color: Value(color),
               isDefault: Value(isDefault),
               serverVersion: const Value(0),
               isDirty: const Value(true),
@@ -51,6 +53,7 @@ class AccountRepository {
   Future<void> editAccount({
     required String id,
     required String name,
+    required String color,
     required bool isDefault,
   }) async {
     await _database.transaction(() async {
@@ -61,6 +64,7 @@ class AccountRepository {
       )..where((account) => account.id.equals(id))).write(
         DbAccountsCompanion(
           name: Value(name.trim()),
+          color: Value(color),
           isDefault: Value(isDefault),
           isDirty: const Value(true),
         ),

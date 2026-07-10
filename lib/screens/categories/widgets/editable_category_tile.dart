@@ -15,15 +15,15 @@ class EditableCategoryTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = category.flutterColor;
+    final color = category.appColor;
     final icon = AppIcons.tryParse(category.iconName);
     return Card(
       child: ListTile(
         onTap: onTap,
         leading: CircleAvatar(
-          backgroundColor: color.withValues(alpha: 0.14),
+          backgroundColor: color.container,
           child: icon == null
-              ? Icon(Icons.category_outlined, color: color)
+              ? Icon(Icons.category_outlined, color: color.fill)
               : AppIcon(icon: icon, size: 24),
         ),
         title: Text(category.name),

@@ -33,18 +33,21 @@ Future<void> seedDevData(AppDatabase db) async {
     id: _uuid.v4(),
     name: 'Cash',
     currencyCode: 'BOB',
+    color: 'emerald',
     isDefault: true,
   );
   final bank = Account(
     id: _uuid.v4(),
     name: 'Bank',
     currencyCode: 'BOB',
+    color: 'blue',
     isDefault: false,
   );
   final savings = Account(
     id: _uuid.v4(),
     name: 'Savings',
     currencyCode: 'USD',
+    color: 'violet',
     isDefault: false,
   );
   final accounts = [cash, bank, savings];
@@ -70,24 +73,24 @@ Future<void> seedDevData(AppDatabase db) async {
     isSystem: false,
   );
 
-  final groceries = expenseCat('Groceries', 'groceries', '#65A30D');
-  final rent = expenseCat('Rent', 'rent', '#4F46E5');
-  final bills = expenseCat('Bills', 'bills', '#D97706');
-  final internet = expenseCat('Internet', 'internet', '#0284C7');
-  final taxi = expenseCat('Taxi', 'taxi', '#CA8A04');
-  final dinner = expenseCat('Dinner', 'dinner', '#EA580C');
-  final drinks = expenseCat('Drinks', 'drinks', '#9333EA');
-  final junkFood = expenseCat('Junk food', 'junkFood', '#DC2626');
-  final medical = expenseCat('Medical', 'medical', '#E11D48');
-  final clothes = expenseCat('Clothes', 'clothes', '#DB2777');
-  final travel = expenseCat('Travel', 'travel', '#0891B2');
-  final entertainment = expenseCat('Entertainment', 'entretainment', '#7C3AED');
-  final selfCare = expenseCat('Self care', 'selfCare', '#0D9488');
-  final gifts = expenseCat('Gifts', 'gifts', '#C026D3');
+  final groceries = expenseCat('Groceries', 'groceries', 'lime');
+  final rent = expenseCat('Rent', 'rent', 'indigo');
+  final bills = expenseCat('Bills', 'bills', 'amber');
+  final internet = expenseCat('Internet', 'internet', 'cyan');
+  final taxi = expenseCat('Taxi', 'taxi', 'orange');
+  final dinner = expenseCat('Dinner', 'dinner', 'pink');
+  final drinks = expenseCat('Drinks', 'drinks', 'violet');
+  final junkFood = expenseCat('Junk food', 'junkFood', 'rose');
+  final medical = expenseCat('Medical', 'medical', 'teal');
+  final clothes = expenseCat('Clothes', 'clothes', 'fuchsia');
+  final travel = expenseCat('Travel', 'travel', 'blue');
+  final entertainment = expenseCat('Entertainment', 'entretainment', 'emerald');
+  final selfCare = expenseCat('Self care', 'selfCare', 'orange');
+  final gifts = expenseCat('Gifts', 'gifts', 'violet');
 
-  final job = incomeCat('Job', 'job', '#16A34A');
-  final crypto = incomeCat('Crypto', 'crypto', '#059669');
-  final investments = incomeCat('Investments', 'grow', '#2563EB');
+  final job = incomeCat('Job', 'job', 'emerald');
+  final crypto = incomeCat('Crypto', 'crypto', 'teal');
+  final investments = incomeCat('Investments', 'grow', 'blue');
 
   final categories = [
     groceries, rent, bills, internet, taxi, dinner, drinks, junkFood,

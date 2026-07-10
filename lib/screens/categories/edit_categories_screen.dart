@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:aad/domain/models/app_color.dart';
 import 'package:aad/domain/models/category.dart';
 import 'package:aad/domain/providers/categories/categories_provider.dart';
 import 'package:aad/screens/categories/widgets/category_section_title.dart';
@@ -38,7 +39,7 @@ class EditCategoriesScreen extends ConsumerWidget {
             children: [
               CategorySectionTitle(
                 title: 'Expenses',
-                color: Colors.red.shade600,
+                color: expenseColor.text,
               ),
               for (final category in expenses)
                 EditableCategoryTile(
@@ -48,7 +49,7 @@ class EditCategoriesScreen extends ConsumerWidget {
               const SizedBox(height: 16),
               CategorySectionTitle(
                 title: 'Incomes',
-                color: Colors.green.shade600,
+                color: incomeColor.text,
               ),
               for (final category in incomes)
                 EditableCategoryTile(

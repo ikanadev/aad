@@ -46,3 +46,6 @@ app.*.map.json
 
 # generated vector icons
 /assets/icons/vec
+
+# Claude Code local settings and temp files
+.claude/settings.local.json*

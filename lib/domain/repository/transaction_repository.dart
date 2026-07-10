@@ -3,8 +3,10 @@ import 'package:uuid/uuid.dart';
 
 import 'package:aad/db/database.dart';
 import 'package:aad/domain/models/category.dart';
+import 'package:aad/domain/models/stats_filters.dart';
 import 'package:aad/domain/models/transaction_details.dart';
 import 'package:aad/domain/models/transaction_filters.dart';
+import 'package:aad/domain/models/year_stats.dart';
 
 class TransactionRepository {
   TransactionRepository(this._database);
@@ -118,6 +120,62 @@ class TransactionRepository {
         row.read(accs.currencyCode)!:
             (row.read(incomeSum) ?? 0) - (row.read(expenseSum) ?? 0),
     };
+  }
+
+  Future<YearStats> getYearExpenseStats(StatsFilters filters) async {
+    final txs = _database.dbTransactions;
+    final accs = _database.dbAccounts;
+    final cats = _database.dbCategories;
+
+    final monthExpr = txs.date.month;
+    final totalSum = txs.amount.sum();
+
+    final query = _database.selectOnly(txs).join([
+      innerJoin(accs, accs.id.equalsExp(txs.accountId)),
+      innerJoin(cats, cats.id.equalsExp(txs.categoryId)),
+    ]);
+    query.addColumns([monthExpr, txs.categoryId, accs.currencyCode, totalSum]);
+
+    query.where(txs.isDeleted.equals(false));
+    query.where(cats.type.equals(CategoryType.expense.dbValue));
+    // Balance adjustments are bookkeeping, not human spending.
+    query.where(cats.isSystem.equals(false));
+    query.where(txs.date.isBiggerOrEqualValue(filters.from));
+    query.where(txs.date.isSmallerOrEqualValue(filters.to));
+    if (filters.accountIds?.isNotEmpty == true) {
+      query.where(txs.accountId.isIn(filters.accountIds!));
+    }
+    if (filters.categoryIds?.isNotEmpty == true) {
+      query.where(txs.categoryId.isIn(filters.categoryIds!));
+    }
+
+    query.groupBy([monthExpr, txs.categoryId, accs.currencyCode]);
+
+    final rows = await query.get();
+    final stats = [
+      for (final row in rows)
+        MonthCategoryStat(
+          month: row.read(monthExpr)!,
+          categoryId: row.read(txs.categoryId)!,
+          currencyCode: row.read(accs.currencyCode)!,
+          total: row.read(totalSum) ?? 0,
+        ),
+    ];
+
+    final categoryIds = stats.map((stat) => stat.categoryId).toSet();
+    final categoryRows = categoryIds.isEmpty
+        ? <DbCategory>[]
+        : await (_database.select(
+            cats,
+          )..where((c) => c.id.isIn(categoryIds))).get();
+
+    return YearStats(
+      year: filters.year,
+      rows: stats,
+      categoriesById: {
+        for (final row in categoryRows) row.id: Category.fromDB(row),
+      },
+    );
   }
 
   Future<int> getAccountBalance(String accountId) async {

@@ -6,6 +6,7 @@ import 'package:aad/domain/models/category.dart';
 import 'package:aad/domain/providers/accounts/accounts_provider.dart';
 import 'package:aad/domain/providers/categories/categories_provider.dart';
 import 'package:aad/domain/providers/transactions/transaction_actions_provider.dart';
+import 'package:aad/utils/app_theme.dart';
 import 'package:aad/utils/currency_utils.dart';
 import 'package:aad/widgets/amount_editor.dart';
 import 'package:aad/widgets/app_icon.dart';
@@ -71,10 +72,10 @@ class _AddTransactionSheetState extends ConsumerState<AddTransactionSheet> {
 
     return Padding(
       padding: EdgeInsets.only(
-        left: 16,
-        right: 16,
-        top: 16,
-        bottom: 16 + MediaQuery.viewInsetsOf(context).bottom,
+        left: AppSpacing.s16,
+        right: AppSpacing.s16,
+        top: AppSpacing.s16,
+        bottom: AppSpacing.s16 + MediaQuery.viewInsetsOf(context).bottom,
       ),
       child: SafeArea(
         child: Column(
@@ -90,7 +91,7 @@ class _AddTransactionSheetState extends ConsumerState<AddTransactionSheet> {
                     onTap: _saving ? null : _pickAccount,
                   ),
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: AppSpacing.s12),
                 Expanded(
                   child: _PickerChip(
                     label: _category.name,
@@ -100,7 +101,7 @@ class _AddTransactionSheetState extends ConsumerState<AddTransactionSheet> {
                 ),
               ],
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: AppSpacing.s24),
             Text(
               '$currencySymbol${_amount.value}',
               textAlign: TextAlign.center,
@@ -117,14 +118,14 @@ class _AddTransactionSheetState extends ConsumerState<AddTransactionSheet> {
               ),
             ),
             if (_error != null) ...[
-              const SizedBox(height: 4),
+              const SizedBox(height: AppSpacing.s4),
               Text(
                 _error!,
                 textAlign: TextAlign.center,
                 style: TextStyle(color: Theme.of(context).colorScheme.error),
               ),
             ],
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.s16),
             NumberPad(
               onNumberPress: _onNumberPress,
               onDecimalPress: _onDecimalPress,
@@ -280,12 +281,12 @@ class _PickerChip extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(12),
+      borderRadius: AppRadius.mdAll,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s12, vertical: 10),
         decoration: BoxDecoration(
           border: Border.all(color: Theme.of(context).colorScheme.outline),
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: AppRadius.mdAll,
         ),
         child: Row(
           children: [
@@ -293,7 +294,7 @@ class _PickerChip extends StatelessWidget {
               data: const IconThemeData(size: 20),
               child: icon,
             ),
-            const SizedBox(width: 8),
+            const SizedBox(width: AppSpacing.s8),
             Expanded(
               child: Text(label, maxLines: 1, overflow: TextOverflow.ellipsis),
             ),
@@ -341,7 +342,7 @@ class _AccountPickerSheet extends ConsumerWidget {
         data: (accounts) {
           if (accounts.isEmpty) {
             return const Padding(
-              padding: EdgeInsets.all(24),
+              padding: EdgeInsets.all(AppSpacing.s24),
               child: Center(child: Text('No accounts yet.')),
             );
           }
@@ -367,11 +368,11 @@ class _AccountPickerSheet extends ConsumerWidget {
           );
         },
         error: (error, stackTrace) => Padding(
-          padding: const EdgeInsets.all(24),
+          padding: const EdgeInsets.all(AppSpacing.s24),
           child: Text('Could not load accounts: $error'),
         ),
         loading: () => const Padding(
-          padding: EdgeInsets.all(24),
+          padding: EdgeInsets.all(AppSpacing.s24),
           child: Center(child: CircularProgressIndicator()),
         ),
       ),
@@ -413,11 +414,11 @@ class _CategoryPickerSheet extends ConsumerWidget {
           );
         },
         error: (error, stackTrace) => Padding(
-          padding: const EdgeInsets.all(24),
+          padding: const EdgeInsets.all(AppSpacing.s24),
           child: Text('Could not load categories: $error'),
         ),
         loading: () => const Padding(
-          padding: EdgeInsets.all(24),
+          padding: EdgeInsets.all(AppSpacing.s24),
           child: Center(child: CircularProgressIndicator()),
         ),
       ),
@@ -439,7 +440,12 @@ class _PickerListSheet extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.s16,
+              AppSpacing.s16,
+              AppSpacing.s16,
+              AppSpacing.s8,
+            ),
             child: Text(title, style: Theme.of(context).textTheme.titleMedium),
           ),
           Flexible(child: child),

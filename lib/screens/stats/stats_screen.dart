@@ -8,6 +8,7 @@ import 'package:aad/screens/stats/widgets/category_expense_item.dart';
 import 'package:aad/screens/stats/widgets/monthly_bar_chart.dart';
 import 'package:aad/screens/stats/widgets/stats_filter_bar.dart';
 import 'package:aad/screens/stats/widgets/year_navigator.dart';
+import 'package:aad/utils/app_theme.dart';
 import 'package:aad/utils/currency_colors.dart';
 
 const _monthNames = [
@@ -38,10 +39,10 @@ class StatsScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Stats')),
       body: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpacing.s16),
         children: [
           const StatsFilterBar(),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.s8),
           YearNavigator(
             year: filters.year,
             onPrevious: filtersNotifier.previousYear,
@@ -49,7 +50,7 @@ class StatsScreen extends ConsumerWidget {
                 ? filtersNotifier.nextYear
                 : null,
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.s8),
           statsValue.when(
             data: (stats) {
               final categoryStats = stats.categoryTotals(month: selectedMonth);
@@ -62,7 +63,7 @@ class StatsScreen extends ConsumerWidget {
                 children: [
                   if (stats.currencies.isNotEmpty)
                     _CurrencyLegend(currencies: stats.currencies),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppSpacing.s8),
                   MonthlyBarChart(
                     stats: stats,
                     selectedMonth: selectedMonth,
@@ -79,11 +80,11 @@ class StatsScreen extends ConsumerWidget {
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppSpacing.s8),
                   if (categoryStats.isEmpty)
                     const Card(
                       child: Padding(
-                        padding: EdgeInsets.all(24),
+                        padding: EdgeInsets.all(AppSpacing.s24),
                         child: Center(
                           child: Text('No expenses in this period.'),
                         ),
@@ -101,7 +102,7 @@ class StatsScreen extends ConsumerWidget {
             },
             error: (error, stackTrace) => Card(
               child: Padding(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(AppSpacing.s16),
                 child: Text('Could not load stats: $error'),
               ),
             ),
@@ -124,7 +125,7 @@ class _CurrencyLegend extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Wrap(
-      spacing: 12,
+      spacing: AppSpacing.s12,
       children: [
         for (final currency in currencies)
           Row(
@@ -138,7 +139,7 @@ class _CurrencyLegend extends StatelessWidget {
                   shape: BoxShape.circle,
                 ),
               ),
-              const SizedBox(width: 4),
+              const SizedBox(width: AppSpacing.s4),
               Text(currency, style: Theme.of(context).textTheme.labelSmall),
             ],
           ),

@@ -7,6 +7,7 @@ import 'package:aad/domain/models/category.dart';
 import 'package:aad/domain/providers/categories/categories_provider.dart';
 import 'package:aad/screens/categories/widgets/category_section_title.dart';
 import 'package:aad/screens/categories/widgets/editable_category_tile.dart';
+import 'package:aad/utils/app_theme.dart';
 
 class EditCategoriesScreen extends ConsumerWidget {
   const EditCategoriesScreen({super.key});
@@ -35,7 +36,12 @@ class EditCategoriesScreen extends ConsumerWidget {
               .toList();
 
           return ListView(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 96),
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.s16,
+              AppSpacing.s16,
+              AppSpacing.s16,
+              96, // extra bottom clearance for the FAB
+            ),
             children: [
               CategorySectionTitle(
                 title: 'Expenses',
@@ -46,7 +52,7 @@ class EditCategoriesScreen extends ConsumerWidget {
                   category: category,
                   onTap: () => context.push('/categories/${category.id}/edit'),
                 ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.s16),
               CategorySectionTitle(
                 title: 'Incomes',
                 color: incomeColor.text,
@@ -61,7 +67,7 @@ class EditCategoriesScreen extends ConsumerWidget {
         },
         error: (error, stackTrace) => Center(
           child: Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(AppSpacing.s16),
             child: Text('Could not load categories: $error'),
           ),
         ),

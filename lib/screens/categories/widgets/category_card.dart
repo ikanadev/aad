@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:aad/domain/models/category.dart';
+import 'package:aad/utils/app_theme.dart';
 import 'package:aad/widgets/app_icon.dart';
 
 class CategoryCard extends StatelessWidget {
@@ -25,7 +26,7 @@ class CategoryCard extends StatelessWidget {
       child: InkWell(
         onTap: onTap,
         child: Padding(
-          padding: const EdgeInsets.all(12),
+          padding: const EdgeInsets.all(AppSpacing.s12),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

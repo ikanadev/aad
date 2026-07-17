@@ -6,6 +6,7 @@ import 'package:aad/domain/providers/transactions/transaction_filters_provider.d
 import 'package:aad/domain/providers/transactions/transactions_provider.dart';
 import 'package:aad/screens/transactions/widgets/range_navigator.dart';
 import 'package:aad/screens/transactions/widgets/range_type_selector.dart';
+import 'package:aad/utils/app_theme.dart';
 import 'package:aad/widgets/total_badge.dart';
 import 'package:aad/widgets/transaction_item.dart';
 
@@ -24,25 +25,25 @@ class TransactionsScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Transactions')),
       body: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpacing.s16),
         children: [
           RangeTypeSelector(
             selected: filters.rangeType,
             onSelected: filtersNotifier.setRangeType,
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.s12),
           RangeNavigator(
             filters: filters,
             onPrevious: filtersNotifier.previousRange,
             onNext: filtersNotifier.nextRange,
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.s12),
           totalsValue.when(
             data: (totals) => totals.isEmpty
                 ? const SizedBox.shrink()
                 : Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
+                    spacing: AppSpacing.s8,
+                    runSpacing: AppSpacing.s8,
                     children: [
                       for (final entry in totals.entries)
                         TotalBadge(currencyCode: entry.key, total: entry.value),
@@ -51,13 +52,13 @@ class TransactionsScreen extends ConsumerWidget {
             error: (error, stackTrace) => Text('Could not load totals: $error'),
             loading: () => const SizedBox.shrink(),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.s12),
           transactionsValue.when(
             data: (transactionList) {
               if (transactionList.items.isEmpty) {
                 return const Card(
                   child: Padding(
-                    padding: EdgeInsets.all(24),
+                    padding: EdgeInsets.all(AppSpacing.s24),
                     child: Center(
                       child: Text('No transactions in this range.'),
                     ),
@@ -71,7 +72,7 @@ class TransactionsScreen extends ConsumerWidget {
                     TransactionItem(transaction: transaction),
                   if (transactionList.hasMore)
                     Padding(
-                      padding: const EdgeInsets.only(top: 8),
+                      padding: const EdgeInsets.only(top: AppSpacing.s8),
                       child: OutlinedButton(
                         onPressed: () => ref
                             .read(transactionsListProvider(filters).notifier)
@@ -84,7 +85,7 @@ class TransactionsScreen extends ConsumerWidget {
             },
             error: (error, stackTrace) => Card(
               child: Padding(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(AppSpacing.s16),
                 child: Text('Could not load transactions: $error'),
               ),
             ),

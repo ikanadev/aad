@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import 'package:aad/domain/providers/accounts/accounts_provider.dart';
 import 'package:aad/screens/home/widgets/account_item.dart';
+import 'package:aad/utils/app_theme.dart';
 
 class AccountsScreen extends ConsumerWidget {
   const AccountsScreen({super.key});
@@ -15,7 +16,7 @@ class AccountsScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Accounts')),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => context.push('/accounts/new'),
+        onPressed: () => context.push('/home/accounts/new'),
         child: const Icon(Icons.add),
       ),
       body: accountsValue.when(
@@ -25,19 +26,24 @@ class AccountsScreen extends ConsumerWidget {
           }
 
           return ListView(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 96),
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.s16,
+              AppSpacing.s16,
+              AppSpacing.s16,
+              96, // extra bottom clearance for the FAB
+            ),
             children: [
               for (final account in accounts)
                 AccountItem(
                   account: account,
-                  onTap: () => context.push('/accounts/${account.id}/edit'),
+                  onTap: () => context.push('/home/accounts/${account.id}/edit'),
                 ),
             ],
           );
         },
         error: (error, stackTrace) => Center(
           child: Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(AppSpacing.s16),
             child: Text('Could not load accounts: $error'),
           ),
         ),

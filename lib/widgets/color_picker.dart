@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:aad/domain/models/app_color.dart';
+import 'package:aad/utils/app_theme.dart';
 
 /// Labeled 56x56 tappable box used by forms for icon/color swatches.
 class SwatchPickerField extends StatelessWidget {
@@ -24,13 +25,13 @@ class SwatchPickerField extends StatelessWidget {
         const SizedBox(height: 6),
         InkWell(
           onTap: onTap,
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: AppRadius.smAll,
           child: Container(
             width: 56,
             height: 56,
             decoration: BoxDecoration(
               border: Border.all(color: Theme.of(context).colorScheme.outline),
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: AppRadius.smAll,
             ),
             child: Center(child: child),
           ),
@@ -51,10 +52,10 @@ Future<AppColor?> showAppColorPicker(
       title: const Text('Choose a color'),
       children: [
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s16),
           child: Wrap(
-            spacing: 12,
-            runSpacing: 12,
+            spacing: AppSpacing.s12,
+            runSpacing: AppSpacing.s12,
             children: [
               for (final color in appColors)
                 Tooltip(
@@ -84,7 +85,7 @@ Future<AppColor?> showAppColorPicker(
             ],
           ),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: AppSpacing.s12),
       ],
     ),
   );

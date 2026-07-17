@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:aad/domain/models/year_stats.dart';
+import 'package:aad/utils/app_theme.dart';
 import 'package:aad/utils/currency_colors.dart';
 import 'package:aad/utils/currency_utils.dart';
 import 'package:aad/widgets/app_icon.dart';
@@ -70,10 +71,10 @@ class CategoryExpenseItem extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: AppSpacing.s4),
                 Wrap(
                   spacing: 6,
-                  runSpacing: 4,
+                  runSpacing: AppSpacing.s4,
                   children: [
                     for (final currency in visible)
                       _AmountBadge(
@@ -104,10 +105,10 @@ class _AmountBadge extends StatelessWidget {
     final amountFormatted = (amount / 100).toStringAsFixed(2);
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s8, vertical: 3),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: AppRadius.mdAll,
       ),
       child: Text(
         '$amountFormatted ${currency.symbol} ${currency.code}',

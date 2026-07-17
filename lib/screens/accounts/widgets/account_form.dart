@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:aad/domain/models/account.dart';
 import 'package:aad/domain/models/app_color.dart';
+import 'package:aad/utils/app_theme.dart';
 import 'package:aad/utils/currency_utils.dart';
 import 'package:aad/widgets/color_picker.dart';
 
@@ -65,14 +66,14 @@ class _AccountFormState extends State<AccountForm> {
     return Form(
       key: _formKey,
       child: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpacing.s16),
         children: [
           if (_error != null) ...[
             Text(
               _error!,
               style: TextStyle(color: Theme.of(context).colorScheme.error),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.s16),
           ],
           TextFormField(
             controller: _nameController,
@@ -88,7 +89,7 @@ class _AccountFormState extends State<AccountForm> {
               return null;
             },
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.s16),
           if (widget.isEditing)
             InputDecorator(
               decoration: const InputDecoration(
@@ -121,7 +122,7 @@ class _AccountFormState extends State<AccountForm> {
                 setState(() => _currencyCode = value);
               },
             ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.s16),
           SwatchPickerField(
             label: 'Color',
             onTap: _pickColor,
@@ -134,7 +135,7 @@ class _AccountFormState extends State<AccountForm> {
               ),
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.s16),
           SwitchListTile(
             title: const Text('Default account'),
             subtitle: Text(
@@ -148,7 +149,7 @@ class _AccountFormState extends State<AccountForm> {
                 ? null
                 : (value) => setState(() => _isDefault = value),
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.s24),
           FilledButton(
             onPressed: _saving ? null : _submit,
             child: _saving
@@ -160,7 +161,7 @@ class _AccountFormState extends State<AccountForm> {
                 : Text(widget.submitLabel),
           ),
           if (widget.onAdjustBalance != null) ...[
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.s12),
             OutlinedButton(
               onPressed: _saving ? null : widget.onAdjustBalance,
               child: const Text('Adjust balance'),

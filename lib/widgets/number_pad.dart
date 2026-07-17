@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:aad/utils/app_theme.dart';
+
 class NumberPad extends StatelessWidget {
   const NumberPad({
     super.key,
@@ -15,7 +17,7 @@ class NumberPad extends StatelessWidget {
   final VoidCallback onSubmit;
 
   static const _rowHeight = 64.0;
-  static const _gap = 8.0;
+  static const _gap = AppSpacing.s8;
 
   @override
   Widget build(BuildContext context) {
@@ -116,7 +118,7 @@ class _PadButton extends StatelessWidget {
     final style = ButtonStyle(
       padding: const WidgetStatePropertyAll(EdgeInsets.zero),
       shape: WidgetStatePropertyAll(
-        RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        RoundedRectangleBorder(borderRadius: AppRadius.mdAll),
       ),
       textStyle: WidgetStatePropertyAll(
         Theme.of(context).textTheme.titleLarge,

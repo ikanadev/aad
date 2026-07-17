@@ -9,6 +9,7 @@ import 'package:aad/domain/providers/categories/categories_provider.dart';
 import 'package:aad/domain/providers/categories/category_actions_provider.dart';
 import 'package:aad/screens/categories/widgets/add_transaction_sheet.dart';
 import 'package:aad/screens/categories/widgets/category_grid.dart';
+import 'package:aad/utils/app_theme.dart';
 
 class CategoriesScreen extends ConsumerStatefulWidget {
   const CategoriesScreen({super.key});
@@ -93,7 +94,7 @@ class _CategoriesScreenState extends ConsumerState<CategoriesScreen>
         ),
         error: (error, stackTrace) => Center(
           child: Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(AppSpacing.s16),
             child: Text('Could not load categories: $error'),
           ),
         ),

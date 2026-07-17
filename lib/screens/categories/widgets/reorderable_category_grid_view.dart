@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:aad/domain/models/category.dart';
 import 'package:aad/screens/categories/widgets/category_card.dart';
+import 'package:aad/utils/app_theme.dart';
 
 class ReorderableCategoryGridView extends StatefulWidget {
   const ReorderableCategoryGridView({
@@ -36,11 +37,11 @@ class _ReorderableCategoryGridViewState
         : 2;
 
     return GridView.builder(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(AppSpacing.s16),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: columns,
-        crossAxisSpacing: 12,
-        mainAxisSpacing: 12,
+        crossAxisSpacing: AppSpacing.s12,
+        mainAxisSpacing: AppSpacing.s12,
         childAspectRatio: 1.05,
       ),
       itemCount: widget.categories.length,
@@ -59,7 +60,7 @@ class _ReorderableCategoryGridViewState
               onDraggableCanceled: (_, _) => setState(() => _draggingId = null),
               feedback: Material(
                 elevation: 8,
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: AppRadius.lgAll,
                 child: SizedBox(
                   width: 150,
                   height: 135,

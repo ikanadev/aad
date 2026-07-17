@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:aad/domain/models/category.dart';
 import 'package:aad/screens/categories/widgets/reorderable_category_grid_view.dart';
+import 'package:aad/utils/app_theme.dart';
 
 class CategoryGrid extends StatelessWidget {
   const CategoryGrid({
@@ -25,7 +26,7 @@ class CategoryGrid extends StatelessWidget {
       return Center(
         child: Card(
           child: Padding(
-            padding: const EdgeInsets.all(24),
+            padding: const EdgeInsets.all(AppSpacing.s24),
             child: Text(
               'No ${type == CategoryType.expense ? 'expense' : 'income'} categories yet.',
               style: TextStyle(color: accentColor),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:aad/domain/models/app_color.dart';
 import 'package:aad/domain/models/category.dart';
+import 'package:aad/utils/app_theme.dart';
 import 'package:aad/widgets/app_icon.dart';
 import 'package:aad/widgets/color_picker.dart';
 
@@ -60,14 +61,14 @@ class _CategoryFormState extends State<CategoryForm> {
     return Form(
       key: _formKey,
       child: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpacing.s16),
         children: [
           if (_error != null) ...[
             Text(
               _error!,
               style: TextStyle(color: Theme.of(context).colorScheme.error),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.s16),
           ],
           TextFormField(
             controller: _nameController,
@@ -83,7 +84,7 @@ class _CategoryFormState extends State<CategoryForm> {
               return null;
             },
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.s16),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -92,7 +93,7 @@ class _CategoryFormState extends State<CategoryForm> {
                 onTap: _pickIcon,
                 child: AppIcon(icon: _icon, size: 28),
               ),
-              const SizedBox(width: 16),
+              const SizedBox(width: AppSpacing.s16),
               SwatchPickerField(
                 label: 'Color',
                 onTap: _pickColor,
@@ -107,7 +108,7 @@ class _CategoryFormState extends State<CategoryForm> {
               ),
             ],
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.s16),
           SegmentedButton<CategoryType>(
             segments: const [
               ButtonSegment(
@@ -126,7 +127,7 @@ class _CategoryFormState extends State<CategoryForm> {
               setState(() => _type = selection.first);
             },
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.s24),
           FilledButton(
             onPressed: _saving ? null : _submit,
             child: _saving
@@ -153,22 +154,22 @@ class _CategoryFormState extends State<CategoryForm> {
             shrinkWrap: true,
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 4,
-              mainAxisSpacing: 12,
-              crossAxisSpacing: 12,
+              mainAxisSpacing: AppSpacing.s12,
+              crossAxisSpacing: AppSpacing.s12,
             ),
             itemCount: AppIcons.values.length,
             itemBuilder: (context, index) {
               final icon = AppIcons.values[index];
               final selected = icon == _icon;
               return InkWell(
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: AppRadius.smAll,
                 onTap: () => Navigator.of(context).pop(icon),
                 child: Container(
                   decoration: BoxDecoration(
                     color: selected
                         ? Theme.of(context).colorScheme.primaryContainer
                         : null,
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: AppRadius.smAll,
                     border: Border.all(
                       color: selected
                           ? Theme.of(context).colorScheme.primary

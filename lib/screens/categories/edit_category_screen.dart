@@ -6,6 +6,7 @@ import 'package:aad/domain/models/category.dart';
 import 'package:aad/domain/providers/categories/categories_provider.dart';
 import 'package:aad/domain/providers/categories/category_actions_provider.dart';
 import 'package:aad/screens/categories/widgets/category_form.dart';
+import 'package:aad/utils/app_theme.dart';
 
 class EditCategoryScreen extends ConsumerStatefulWidget {
   const EditCategoryScreen({super.key, required this.categoryId});
@@ -57,7 +58,7 @@ class _EditCategoryScreenState extends ConsumerState<EditCategoryScreen> {
         },
         error: (error, stackTrace) => Center(
           child: Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(AppSpacing.s16),
             child: Text('Could not load category: $error'),
           ),
         ),

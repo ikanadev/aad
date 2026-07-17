@@ -15,35 +15,6 @@ import 'package:aad/widgets/app_shell.dart';
 final router = GoRouter(
   initialLocation: '/home',
   routes: [
-    GoRoute(
-      path: '/accounts',
-      builder: (context, state) => const AccountsScreen(),
-      routes: [
-        GoRoute(
-          path: 'new',
-          builder: (context, state) => const NewAccountScreen(),
-        ),
-        GoRoute(
-          path: ':id/edit',
-          builder: (context, state) =>
-              EditAccountScreen(accountId: state.pathParameters['id']!),
-        ),
-      ],
-    ),
-    GoRoute(
-      path: '/categories/new',
-      builder: (context, state) => const AddCategoryScreen(),
-    ),
-    // Must stay above '/categories/:id/edit' so 'edit' isn't matched as an id.
-    GoRoute(
-      path: '/categories/edit',
-      builder: (context, state) => const EditCategoriesScreen(),
-    ),
-    GoRoute(
-      path: '/categories/:id/edit',
-      builder: (context, state) =>
-          EditCategoryScreen(categoryId: state.pathParameters['id']!),
-    ),
     StatefulShellRoute.indexedStack(
       builder: (context, state, navigationShell) {
         return AppShell(navigationShell: navigationShell);
@@ -54,6 +25,24 @@ final router = GoRouter(
             GoRoute(
               path: '/home',
               builder: (context, state) => const HomeScreen(),
+              routes: [
+                GoRoute(
+                  path: 'accounts',
+                  builder: (context, state) => const AccountsScreen(),
+                  routes: [
+                    GoRoute(
+                      path: 'new',
+                      builder: (context, state) => const NewAccountScreen(),
+                    ),
+                    GoRoute(
+                      path: ':id/edit',
+                      builder: (context, state) => EditAccountScreen(
+                        accountId: state.pathParameters['id']!,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ],
         ),
@@ -62,6 +51,23 @@ final router = GoRouter(
             GoRoute(
               path: '/categories',
               builder: (context, state) => const CategoriesScreen(),
+              routes: [
+                GoRoute(
+                  path: 'new',
+                  builder: (context, state) => const AddCategoryScreen(),
+                ),
+                // Must stay above ':id/edit' so 'edit' isn't matched as an id.
+                GoRoute(
+                  path: 'edit',
+                  builder: (context, state) => const EditCategoriesScreen(),
+                ),
+                GoRoute(
+                  path: ':id/edit',
+                  builder: (context, state) => EditCategoryScreen(
+                    categoryId: state.pathParameters['id']!,
+                  ),
+                ),
+              ],
             ),
           ],
         ),

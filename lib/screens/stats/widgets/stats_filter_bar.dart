@@ -6,6 +6,7 @@ import 'package:aad/domain/models/stats_filters.dart';
 import 'package:aad/domain/providers/accounts/accounts_provider.dart';
 import 'package:aad/domain/providers/categories/categories_provider.dart';
 import 'package:aad/domain/providers/stats/stats_filters_provider.dart';
+import 'package:aad/utils/app_theme.dart';
 import 'package:aad/widgets/app_icon.dart';
 
 /// Two filter buttons ("Accounts · All", "Categories · N") opening multi-select
@@ -55,7 +56,7 @@ class StatsFilterBar extends ConsumerWidget {
                 ),
               ),
             ),
-            const SizedBox(width: 8),
+            const SizedBox(width: AppSpacing.s8),
             Expanded(
               child: _FilterButton(
                 label: 'Categories',
@@ -133,7 +134,7 @@ class StatsFilterBar extends ConsumerWidget {
               shrinkWrap: true,
               children: [
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s16),
                   child: Text(
                     title,
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
@@ -208,12 +209,12 @@ class _SelectionRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: 8),
+      padding: const EdgeInsets.only(top: AppSpacing.s8),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.only(top: 6, right: 8),
+            padding: const EdgeInsets.only(top: 6, right: AppSpacing.s8),
             child: Text(
               label,
               style: Theme.of(context).textTheme.labelMedium?.copyWith(

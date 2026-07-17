@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:aad/router.dart';
+import 'package:aad/utils/app_theme.dart';
 
 void main() {
   runApp(const ProviderScope(child: MyApp()));
@@ -19,9 +20,8 @@ class MyApp extends StatelessWidget {
       builder: (lightDynamic, darkDynamic) => MaterialApp.router(
         title: 'AAD',
         debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          colorScheme:
-              darkDynamic ??
+        theme: buildAppTheme(
+          darkDynamic ??
               ColorScheme.fromSeed(
                 seedColor: Colors.deepPurple,
                 brightness: Brightness.dark,

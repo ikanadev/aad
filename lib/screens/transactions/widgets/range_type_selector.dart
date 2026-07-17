@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:aad/domain/models/transaction_filters.dart';
+import 'package:aad/utils/app_theme.dart';
 
 class RangeTypeSelector extends StatelessWidget {
   const RangeTypeSelector({
@@ -23,7 +24,8 @@ class RangeTypeSelector extends StatelessWidget {
             isSelected: type == selected,
             onTap: () => onSelected(type),
           ),
-          if (type != DateRangeType.values.last) const SizedBox(width: 8),
+          if (type != DateRangeType.values.last)
+            const SizedBox(width: AppSpacing.s8),
         ],
       ],
     );
@@ -52,10 +54,10 @@ class _RangeTypeButton extends StatelessWidget {
       color: isSelected
           ? colorScheme.primaryContainer
           : colorScheme.surfaceContainerHighest,
-      borderRadius: BorderRadius.circular(12),
+      borderRadius: AppRadius.mdAll,
       child: InkWell(
         onTap: isSelected ? null : onTap,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: AppRadius.mdAll,
         child: SizedBox(
           width: 64,
           height: 64,
@@ -63,7 +65,7 @@ class _RangeTypeButton extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(_icon, size: 24, color: color),
-              const SizedBox(height: 4),
+              const SizedBox(height: AppSpacing.s4),
               Text(
                 _label,
                 style: Theme.of(context).textTheme.labelSmall?.copyWith(

@@ -37,7 +37,7 @@ class AccountItem extends StatelessWidget {
             ],
           ],
         ),
-        subtitle: Text('${currency.name} (${currency.code})'),
+        subtitle: Text(currency.name),
         trailing: Text(
           '$balanceFormatted ${currency.symbol}',
           style: Theme.of(context).textTheme.titleMedium?.income,

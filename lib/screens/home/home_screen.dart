@@ -28,6 +28,13 @@ class HomeScreen extends ConsumerWidget {
         child: ListView(
           padding: const EdgeInsets.all(AppSpacing.s16),
           children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('Accounts', style: Theme.of(context).textTheme.titleSmall),
+                IconButton(onPressed: () {}, icon: Icon(Icons.remove_red_eye))
+              ],
+            ),
             Text('Accounts', style: Theme.of(context).textTheme.titleSmall),
             const SizedBox(height: AppSpacing.s12),
             accountsValue.when(

@@ -1,12 +1,28 @@
+import 'package:aad/domain/models/prefs_keys.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:aad/router.dart';
 import 'package:aad/utils/app_theme.dart';
+import 'package:aad/domain/providers/app/shared_prefs_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-void main() {
-  runApp(const ProviderScope(child: MyApp()));
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  final prefs = await SharedPreferencesWithCache.create(
+    cacheOptions: SharedPreferencesWithCacheOptions(
+      allowList: {PrefsKeys.showAmounts},
+    ),
+  );
+
+  runApp(
+    ProviderScope(
+      overrides: [sharedPrefsProvider.overrideWithValue(prefs)],
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {

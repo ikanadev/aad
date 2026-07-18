@@ -8,6 +8,8 @@ import 'package:aad/domain/providers/categories/categories_provider.dart';
 import 'package:aad/screens/categories/widgets/category_section_title.dart';
 import 'package:aad/screens/categories/widgets/editable_category_tile.dart';
 import 'package:aad/utils/app_theme.dart';
+import 'package:aad/widgets/empty_section.dart';
+import 'package:aad/widgets/error_section.dart';
 
 class EditCategoriesScreen extends ConsumerWidget {
   const EditCategoriesScreen({super.key});
@@ -25,7 +27,7 @@ class EditCategoriesScreen extends ConsumerWidget {
       body: categoriesValue.when(
         data: (categories) {
           if (categories.isEmpty) {
-            return const Center(child: Text('No categories yet.'));
+            return const Center(child: EmptySection(text: 'No categories yet.'));
           }
 
           final expenses = categories
@@ -66,10 +68,7 @@ class EditCategoriesScreen extends ConsumerWidget {
           );
         },
         error: (error, stackTrace) => Center(
-          child: Padding(
-            padding: const EdgeInsets.all(AppSpacing.s16),
-            child: Text('Could not load categories: $error'),
-          ),
+          child: ErrorSection(text: 'Could not load categories: $error'),
         ),
         loading: () => const Center(child: CircularProgressIndicator()),
       ),

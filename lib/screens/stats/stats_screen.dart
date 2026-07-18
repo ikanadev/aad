@@ -10,6 +10,8 @@ import 'package:aad/screens/stats/widgets/stats_filter_bar.dart';
 import 'package:aad/screens/stats/widgets/year_navigator.dart';
 import 'package:aad/utils/app_theme.dart';
 import 'package:aad/utils/currency_colors.dart';
+import 'package:aad/widgets/empty_section.dart';
+import 'package:aad/widgets/error_section.dart';
 
 const _monthNames = [
   'January',
@@ -82,14 +84,7 @@ class StatsScreen extends ConsumerWidget {
                   ),
                   const SizedBox(height: AppSpacing.s8),
                   if (categoryStats.isEmpty)
-                    const Card(
-                      child: Padding(
-                        padding: EdgeInsets.all(AppSpacing.s24),
-                        child: Center(
-                          child: Text('No expenses in this period.'),
-                        ),
-                      ),
-                    )
+                    const EmptySection(text: 'No expenses in this period.')
                   else
                     for (final stat in categoryStats)
                       CategoryExpenseItem(
@@ -100,12 +95,8 @@ class StatsScreen extends ConsumerWidget {
                 ],
               );
             },
-            error: (error, stackTrace) => Card(
-              child: Padding(
-                padding: const EdgeInsets.all(AppSpacing.s16),
-                child: Text('Could not load stats: $error'),
-              ),
-            ),
+            error: (error, stackTrace) =>
+                ErrorSection(text: 'Could not load stats: $error'),
             loading: () => const Padding(
               padding: EdgeInsets.all(48),
               child: Center(child: CircularProgressIndicator()),

@@ -9,7 +9,7 @@ import 'package:aad/domain/providers/categories/categories_provider.dart';
 import 'package:aad/domain/providers/categories/category_actions_provider.dart';
 import 'package:aad/screens/categories/widgets/add_transaction_sheet.dart';
 import 'package:aad/screens/categories/widgets/category_grid.dart';
-import 'package:aad/utils/app_theme.dart';
+import 'package:aad/widgets/error_section.dart';
 
 class CategoriesScreen extends ConsumerStatefulWidget {
   const CategoriesScreen({super.key});
@@ -64,7 +64,6 @@ class _CategoriesScreenState extends ConsumerState<CategoriesScreen>
           children: [
             CategoryGrid(
               type: CategoryType.expense,
-              accentColor: expenseColor.fill,
               categories: categories
                   .where((category) => category.type == CategoryType.expense)
                   .toList(),
@@ -78,7 +77,6 @@ class _CategoriesScreenState extends ConsumerState<CategoriesScreen>
             ),
             CategoryGrid(
               type: CategoryType.income,
-              accentColor: incomeColor.fill,
               categories: categories
                   .where((category) => category.type == CategoryType.income)
                   .toList(),
@@ -93,10 +91,7 @@ class _CategoriesScreenState extends ConsumerState<CategoriesScreen>
           ],
         ),
         error: (error, stackTrace) => Center(
-          child: Padding(
-            padding: const EdgeInsets.all(AppSpacing.s16),
-            child: Text('Could not load categories: $error'),
-          ),
+          child: ErrorSection(text: 'Could not load categories: $error'),
         ),
         loading: () => const Center(child: CircularProgressIndicator()),
       ),

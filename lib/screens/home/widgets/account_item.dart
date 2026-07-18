@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:aad/domain/models/account_details.dart';
 import 'package:aad/utils/currency_utils.dart';
+import 'package:aad/utils/money_text_style.dart';
 
 class AccountItem extends StatelessWidget {
   const AccountItem({super.key, required this.account, required this.onTap});
@@ -38,8 +39,8 @@ class AccountItem extends StatelessWidget {
         ),
         subtitle: Text('${currency.name} (${currency.code})'),
         trailing: Text(
-          '$balanceFormatted ${currency.symbol} ${currency.code}',
-          style: Theme.of(context).textTheme.bodyMedium,
+          '$balanceFormatted ${currency.symbol}',
+          style: Theme.of(context).textTheme.titleMedium?.income,
         ),
       ),
     );

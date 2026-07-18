@@ -7,7 +7,7 @@ import 'package:aad/domain/providers/accounts/account_actions_provider.dart';
 import 'package:aad/domain/providers/accounts/accounts_provider.dart';
 import 'package:aad/screens/accounts/widgets/account_form.dart';
 import 'package:aad/screens/accounts/widgets/adjust_balance_sheet.dart';
-import 'package:aad/utils/app_theme.dart';
+import 'package:aad/widgets/error_section.dart';
 
 class EditAccountScreen extends ConsumerStatefulWidget {
   const EditAccountScreen({super.key, required this.accountId});
@@ -59,10 +59,7 @@ class _EditAccountScreenState extends ConsumerState<EditAccountScreen> {
           );
         },
         error: (error, stackTrace) => Center(
-          child: Padding(
-            padding: const EdgeInsets.all(AppSpacing.s16),
-            child: Text('Could not load account: $error'),
-          ),
+          child: ErrorSection(text: 'Could not load account: $error'),
         ),
         loading: () => const Center(child: CircularProgressIndicator()),
       ),

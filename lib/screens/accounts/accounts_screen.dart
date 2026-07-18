@@ -5,6 +5,8 @@ import 'package:go_router/go_router.dart';
 import 'package:aad/domain/providers/accounts/accounts_provider.dart';
 import 'package:aad/screens/home/widgets/account_item.dart';
 import 'package:aad/utils/app_theme.dart';
+import 'package:aad/widgets/empty_section.dart';
+import 'package:aad/widgets/error_section.dart';
 
 class AccountsScreen extends ConsumerWidget {
   const AccountsScreen({super.key});
@@ -22,7 +24,7 @@ class AccountsScreen extends ConsumerWidget {
       body: accountsValue.when(
         data: (accounts) {
           if (accounts.isEmpty) {
-            return const Center(child: Text('No accounts yet.'));
+            return const Center(child: EmptySection(text: 'No accounts yet.'));
           }
 
           return ListView(
@@ -42,10 +44,7 @@ class AccountsScreen extends ConsumerWidget {
           );
         },
         error: (error, stackTrace) => Center(
-          child: Padding(
-            padding: const EdgeInsets.all(AppSpacing.s16),
-            child: Text('Could not load accounts: $error'),
-          ),
+          child: ErrorSection(text: 'Could not load accounts: $error'),
         ),
         loading: () => const Center(child: CircularProgressIndicator()),
       ),

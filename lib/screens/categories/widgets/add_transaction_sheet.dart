@@ -10,6 +10,8 @@ import 'package:aad/utils/app_theme.dart';
 import 'package:aad/utils/currency_utils.dart';
 import 'package:aad/widgets/amount_editor.dart';
 import 'package:aad/widgets/app_icon.dart';
+import 'package:aad/widgets/empty_section.dart';
+import 'package:aad/widgets/error_section.dart';
 import 'package:aad/widgets/number_pad.dart';
 
 Future<void> showAddTransactionSheet(
@@ -341,10 +343,7 @@ class _AccountPickerSheet extends ConsumerWidget {
       child: accountsValue.when(
         data: (accounts) {
           if (accounts.isEmpty) {
-            return const Padding(
-              padding: EdgeInsets.all(AppSpacing.s24),
-              child: Center(child: Text('No accounts yet.')),
-            );
+            return const EmptySection(text: 'No accounts yet.');
           }
 
           return ListView(
@@ -367,10 +366,8 @@ class _AccountPickerSheet extends ConsumerWidget {
             ],
           );
         },
-        error: (error, stackTrace) => Padding(
-          padding: const EdgeInsets.all(AppSpacing.s24),
-          child: Text('Could not load accounts: $error'),
-        ),
+        error: (error, stackTrace) =>
+            ErrorSection(text: 'Could not load accounts: $error'),
         loading: () => const Padding(
           padding: EdgeInsets.all(AppSpacing.s24),
           child: Center(child: CircularProgressIndicator()),
@@ -413,10 +410,8 @@ class _CategoryPickerSheet extends ConsumerWidget {
             ],
           );
         },
-        error: (error, stackTrace) => Padding(
-          padding: const EdgeInsets.all(AppSpacing.s24),
-          child: Text('Could not load categories: $error'),
-        ),
+        error: (error, stackTrace) =>
+            ErrorSection(text: 'Could not load categories: $error'),
         loading: () => const Padding(
           padding: EdgeInsets.all(AppSpacing.s24),
           child: Center(child: CircularProgressIndicator()),
